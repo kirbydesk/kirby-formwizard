@@ -25,6 +25,9 @@ Form builder for Kirby projects with the Pagewizard and the Project Wizard: buil
 
 ## Styling
 
+In the Project Wizard under *Blöcke › Formular* (as for the contact form): the fields' padding, corners and border, their colours per variant (background, border, text, focus), the gaps – with a live preview. The preview of a form in *Formulare* and of the block on a page shows the real fields in that look.
+
+
 CSS variables `--pwform-*` per colour variant (field background, border, text, focus; gaps, padding, corners) – set in the Project Wizard once the block is there, overridable in `site/patches/css/kirby-formwizard/`.
 
 ## Options

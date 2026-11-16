@@ -80,7 +80,7 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
 9. ✅ **Captcha und Begrenzung** (Schlüssel verschlüsselt in den Formular-Einstellungen statt in der `.env`):
    - Anbieter wählbar, Schlüssel über `secrets` in die `.env`; dafür `pwSecrets::PLUGINS` ergänzen oder auf Selbst-Anmeldung umstellen
    - Begrenzung über ein Kürzel der IP-Adresse
-10. **Project Wizard:**
+10. ✅ **Project Wizard:**
    - Seite „Formulare“ im Zahnrad-Menü (Spamschutz, Aufbewahrung)
    - Gestaltung und Vorschau unter Blöcke › Formular
    - Löschfrist automatisch beim Aufruf des Panels

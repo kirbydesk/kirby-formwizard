@@ -262,4 +262,10 @@
 	'formwizard.rate.minutes' => 'per',
 	'formwizard.rate.minutes.unit' => 'minutes',
 	'formwizard.rate.help' => 'Per visitor, counted by a hash of the IP address – the address itself isn’t stored and is forgotten after the time.',
+	// (the sample form in the Project Wizard's preview)
+	'formwizard.sample.name' => 'Name',
+	'formwizard.sample.email' => 'E-mail',
+	'formwizard.sample.message' => 'Message',
+	// (the block's name in the Project Wizard: <plugin folder>.name)
+	'kirby-formwizard.name' => 'Form',
 ];
