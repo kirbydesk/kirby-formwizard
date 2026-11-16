@@ -1,0 +1,233 @@
+/* DO NOT MODIFY THIS FILE - Override in site/patches/css/kirby-formwizard/_styles.css */
+
+/* Field colours per theme (Project Wizard → Form › Design) */
+section[data-block="form"] {
+	--pw-fw-background: var(--pwform-field-background);
+	--pw-fw-border: var(--pwform-field-border);
+	--pw-fw-text: var(--pwform-field-text);
+	--pw-fw-focus: var(--pwform-field-focus);
+}
+section[data-block="form"][data-style="variant"] {
+	--pw-fw-background: var(--pwform-field-background-variant);
+	--pw-fw-border: var(--pwform-field-border-variant);
+	--pw-fw-text: var(--pwform-field-text-variant);
+	--pw-fw-focus: var(--pwform-field-focus-variant);
+}
+section[data-block="form"][data-style="variant2"] {
+	--pw-fw-background: var(--pwform-field-background-variant2);
+	--pw-fw-border: var(--pwform-field-border-variant2);
+	--pw-fw-text: var(--pwform-field-text-variant2);
+	--pw-fw-focus: var(--pwform-field-focus-variant2);
+}
+section[data-block="form"][data-style="variant3"] {
+	--pw-fw-background: var(--pwform-field-background-variant3);
+	--pw-fw-border: var(--pwform-field-border-variant3);
+	--pw-fw-text: var(--pwform-field-text-variant3);
+	--pw-fw-focus: var(--pwform-field-focus-variant3);
+}
+
+section[data-block="form"] {
+	/* -------------- the gap to the intro --------------*/
+	:is([data-field="tagline"], [data-field="heading"], [data-field="textarea"], [data-field="writer"], [data-field="markdown"]) + [data-block="items"] {
+		padding-top: var(--pwform-item-text-gap);
+	}
+
+	/* -------------- the form: two columns, a full field over both --------------*/
+	form[data-formwizard] {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--pwform-field-gap, 1rem);
+		margin: 0;
+	}
+	@media (min-width: 768px) {
+		form[data-formwizard] {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			column-gap: calc(var(--pwform-field-gap, 1rem) * 1.5);
+		}
+		[data-formwizard-field][data-width="full"],
+		[data-formwizard-submit] {
+			grid-column: 1 / -1;
+		}
+	}
+
+	[data-formwizard-field] {
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+		min-width: 0;
+
+		/* a condition not met: hidden (the script) */
+		&[hidden] {
+			display: none;
+		}
+
+		> label,
+		legend {
+			font-weight: 600;
+			font-size: 0.875em;
+		}
+		input:not([type="checkbox"], [type="radio"], [type="file"]),
+		textarea,
+		select {
+			width: 100%;
+			box-sizing: border-box;
+			font: inherit;
+			color: var(--pw-fw-text);
+			background-color: var(--pw-fw-background);
+			border: var(--pwform-field-border-width, 1px) solid var(--pw-fw-border);
+			border-radius: var(--pwform-field-radius, 0.375rem);
+			padding: var(--pwform-field-padding, 0.75rem);
+			outline: none;
+			transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+			&:focus {
+				border-color: var(--pw-fw-focus);
+				box-shadow: 0 0 0 3px color-mix(in srgb, var(--pw-fw-focus) 25%, transparent);
+			}
+		}
+		textarea {
+			min-height: 9rem;
+			resize: vertical;
+		}
+		input[type="checkbox"],
+		input[type="radio"] {
+			width: 1.05em;
+			height: 1.05em;
+			margin: 0.2em 0 0;
+			accent-color: var(--pw-fw-focus);
+			flex-shrink: 0;
+		}
+	}
+
+	/* one or several options: a group with its legend */
+	fieldset {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		min-width: 0;
+
+		legend {
+			padding: 0;
+			margin-bottom: 0.5rem;
+		}
+	}
+	[data-formwizard-options] {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.25rem;
+
+		label {
+			display: flex;
+			gap: 0.5rem;
+			align-items: flex-start;
+			cursor: pointer;
+		}
+	}
+
+	/* the upload: the button of the browser, the limits below */
+	[data-formwizard-field][data-type="file"] input[type="file"] {
+		font: inherit;
+		font-size: 0.875em;
+		padding: 0.75rem;
+		border: var(--pwform-field-border-width, 1px) dashed var(--pw-fw-border);
+		border-radius: var(--pwform-field-radius, 0.375rem);
+		background-color: var(--pw-fw-background);
+		color: var(--pw-fw-text);
+	}
+	[data-formwizard-limits],
+	[data-formwizard-help] {
+		font-size: 0.8125em;
+		opacity: 0.75;
+	}
+
+	/* a heading in the form */
+	[data-formwizard-field][data-type="info"] {
+		padding-top: 0.5rem;
+
+		h3 {
+			margin: 0;
+			font-size: 1.125em;
+		}
+		p {
+			margin: 0;
+		}
+	}
+
+	/* the consent: the box beside its text */
+	[data-formwizard-field][data-type="consent"] {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		column-gap: 0.625rem;
+		align-items: start;
+		font-size: 0.875em;
+
+		> label {
+			font-weight: normal;
+			font-size: inherit;
+		}
+		a {
+			color: inherit;
+			text-decoration: underline;
+		}
+		[data-formwizard-error] {
+			grid-column: 2;
+		}
+	}
+
+	/* required: the asterisk, an error below the field */
+	:is(label, legend) span[aria-hidden] {
+		color: var(--pw-fw-focus);
+	}
+	[data-invalid] :is(input:not([type="checkbox"], [type="radio"]), textarea, select) {
+		border-color: #c1121f;
+	}
+	[data-formwizard-error] {
+		font-size: 0.8125em;
+		color: #c1121f;
+	}
+
+	[data-formwizard-submit] {
+		margin-top: 0.25rem;
+	}
+
+	/* the trap for bots: out of sight, not only invisible */
+	[data-formwizard-trap] {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
+	/* after sending: the thanks, the notes */
+	[data-formwizard-message] {
+		border-radius: var(--pwform-field-radius, 0.375rem);
+		padding: 1.25rem 1.5rem;
+
+		p {
+			margin: 0;
+		}
+		p + p {
+			margin-top: 0.5em;
+		}
+		a {
+			color: inherit;
+			text-decoration: underline;
+		}
+	}
+	[data-formwizard-message="sent"] {
+		background: color-mix(in srgb, #1a7f37 8%, transparent);
+		border: 1px solid color-mix(in srgb, #1a7f37 30%, transparent);
+	}
+	[data-formwizard-message="failed"],
+	[data-formwizard-message="invalid"] {
+		margin-bottom: var(--pwform-field-gap, 1rem);
+		background: color-mix(in srgb, #c1121f 8%, transparent);
+		border: 1px solid color-mix(in srgb, #c1121f 30%, transparent);
+	}
+	[data-formwizard-message="closed"],
+	[data-formwizard-message="note"] {
+		border: 1px dashed currentColor;
+		opacity: 0.8;
+	}
+}

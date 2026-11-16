@@ -1,9 +1,24 @@
 <?php
 
+// Ensure pwConfig is available when plugins are loaded in alphabetical order
+// (manual installation has no composer autoloader – load order depends on filesystem)
+if (!class_exists('pwConfig')) {
+	$pagewizardConfig = __DIR__ . '/../kirby-pagewizard/src/helpers/blocks/config.php';
+	if (file_exists($pagewizardConfig)) {
+		require_once $pagewizardConfig;
+	}
+}
+
 require_once __DIR__ . '/src/classes/Forms.php';
 require_once __DIR__ . '/src/classes/Fields.php';
 require_once __DIR__ . '/src/classes/Uploads.php';
+require_once __DIR__ . '/src/classes/Spam.php';
+require_once __DIR__ . '/src/classes/Render.php';
+require_once __DIR__ . '/src/classes/Submit.php';
 require_once __DIR__ . '/src/classes/FormPage.php';
+
+// the block: a form on a page
+if (class_exists('pwConfig')) pwConfig::register('pwform', __DIR__ . '/src/config');
 
 Kirby::plugin('kirbydesk/kirby-formwizard', [
 	'options' => [
@@ -12,10 +27,14 @@ Kirby::plugin('kirbydesk/kirby-formwizard', [
 	],
 
 	/* -------------- Extensions --------------*/
+	'api'          => require __DIR__ . '/src/extensions/api.php',
 	'areas'        => require __DIR__ . '/src/extensions/areas.php',
 	'blueprints'   => require __DIR__ . '/src/extensions/blueprints.php',
 	'hooks'        => require __DIR__ . '/src/extensions/hooks.php',
 	'routes'       => require __DIR__ . '/src/extensions/routes.php',
+	'snippets'     => [
+		'blocks/pwform' => __DIR__ . '/snippets/index.php',
+	],
 	'translations' => require __DIR__ . '/src/extensions/translations.php',
 	'pageModels'   => [
 		'formwizard-form' => FormwizardFormPage::class,

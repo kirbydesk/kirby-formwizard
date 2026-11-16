@@ -26,6 +26,37 @@ $noOptions = [
 
 return array_merge([
 
+	/* -------------- The block: a form on a page --------------*/
+	// (lazy: kirby-pagewizard loads after this plugin)
+	'blocks/pwform' => fn () => pwBlueprint::main('pwform', fn ($cfg) => [
+		'name'          => 'formwizard.block.name',
+		'icon'          => 'formwizard',
+		'contentFields' => array_merge(
+			pwBlueprint::stdContent($cfg, ['tagline', 'heading', 'editor']),
+			[
+				'form' => [
+					'label'    => 'formwizard.block.form',
+					'type'     => 'pages',
+					'multiple' => false,
+					'required' => true,
+					'query'    => 'kirby.page("' . fwForms::slug() . '").children.listed',
+					'empty'    => 'formwizard.block.form.empty',
+					'help'     => 'formwizard.block.form.help',
+					'image'    => ['icon' => 'formwizard', 'back' => 'transparent'],
+					'info'     => '{{ page.fwInfo }}',
+				],
+				'successText' => [
+					'label'       => 'formwizard.block.success',
+					'type'        => 'textarea',
+					'buttons'     => ['bold', 'italic', 'link'],
+					'size'        => 'small',
+					'placeholder' => 'formwizard.block.success.placeholder',
+					'help'        => 'formwizard.block.success.help',
+				],
+			]
+		),
+	])(),
+
 	/* -------------- Form Wizard › Forms --------------*/
 	'pages/formwizard-forms' => fn () => [
 		'title'    => 'formwizard.forms',

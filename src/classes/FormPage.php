@@ -21,11 +21,39 @@ class FormwizardFormPage extends Page
 		return $this->fwFields()->filter(fn (Block $b) => fwForms::isInput($b->type()))->count();
 	}
 
-	/** "8 fields" (for the list of the forms) */
+	/** "Fields: 8 · on: Contact, Services" (for the list of the forms) */
 	public function fwInfo(): string
 	{
-		$count = $this->fwFieldCount();
-		return tt('formwizard.form.info.fields', null, ['count' => $count]);
+		$info  = tt('formwizard.form.info.fields', null, ['count' => $this->fwFieldCount()]);
+		$pages = $this->fwUsage();
+		if ($pages !== []) {
+			$titles = array_map(fn (Page $p) => $p->title()->value(), array_slice($pages, 0, 3));
+			$info  .= ' · ' . tt('formwizard.form.info.usage', null, ['pages' => implode(', ', $titles) . (count($pages) > 3 ? ' …' : '')]);
+		}
+		return $info;
+	}
+
+	/**
+	 * The pages with a block showing this form (their content in the
+	 * default language searched for the form's id; once per request)
+	 */
+	public function fwUsage(): array
+	{
+		static $index = null;
+		if ($index === null) {
+			$index = [];
+			foreach (site()->index(true) as $page) {
+				if (str_starts_with($page->intendedTemplate()->name(), 'formwizard-')) continue;
+				$raw = implode("\n", array_filter($page->content()->toArray(), 'is_string'));
+				if (str_contains($raw, 'pwform')) $index[] = [$page, str_replace('\\/', '/', $raw)];
+			}
+		}
+		$uuid = $this->uuid()?->toString();
+		$list = [];
+		foreach ($index as [$page, $raw]) {
+			if (($uuid && str_contains($raw, $uuid)) || str_contains($raw, '"' . $this->id() . '"')) $list[] = $page;
+		}
+		return $list;
 	}
 
 	/**

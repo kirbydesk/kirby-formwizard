@@ -1,12 +1,17 @@
 import './index.css';
 import FieldPreview from './components/FieldPreview.vue';
+import pwform from './blocks/Form.vue';
 import Submissions from './views/Submissions.vue';
 
 const types = ['fwtext', 'fwemail', 'fwtel', 'fwnumber', 'fwdate', 'fwtextarea', 'fwselect', 'fwradio', 'fwcheckboxes', 'fwfile', 'fwhidden', 'fwinfo', 'fwconsent'];
 
 panel.plugin('kirbydesk/kirby-formwizard', {
 	// the fields of a form: one row each
-	blocks: Object.fromEntries(types.map((type) => [type, { ...FieldPreview }])),
+	blocks: {
+		// the block: a form on a page
+		pwform,
+		...Object.fromEntries(types.map((type) => [type, { ...FieldPreview }])),
+	},
 	components: {
 		'k-formwizard-submissions-view': Submissions,
 	},

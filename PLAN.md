@@ -54,10 +54,10 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
    - Container und Formular-Seiten mit Blueprints, die 13 Feldtypen als Blocks
    - Menüpunkt „Form Wizard › Formulare“
    - Die Übersicht mit Feldern, Eingängen und Verwendung
-3. **Formular auf der Website:**
+3. ✅ **Formular auf der Website:**
    - Block `pwform` mit Tagline, Überschrift, Text, Layout und Stil wie die anderen Blöcke, dazu die Auswahl des Formulars
    - Das Snippet zeigt alle Feldtypen; Bedingungen funktionieren auch ohne JavaScript serverseitig, mit JavaScript live
-4. **Absenden:**
+4. ✅ **Absenden** (noch ohne Speichern und Mail – die folgen mit Schritt 5 und 7):
    - Route, Prüfung auf dem Server, Weiterleitung nach dem Absenden (wie beim Kontaktformular, ohne JavaScript nutzbar)
    - Fehler am Feld, Danke-Text oder Weiterleitung
    - Unsichtbarer Spamschutz
