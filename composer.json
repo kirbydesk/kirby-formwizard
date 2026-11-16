@@ -23,6 +23,6 @@
 	"require": {
 		"getkirby/composer-installer": "^1.2",
 		"kirbydesk/kirby-pagewizard": "^1.5.1",
-		"kirbydesk/kirby-projectwizard": "^1.7.0"
+		"kirbydesk/kirby-projectwizard": "^1.8.0"
 	}
 }
