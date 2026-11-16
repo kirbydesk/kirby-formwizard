@@ -60,11 +60,20 @@ class fwSubmit
 
 		try {
 			kirby()->trigger('formwizard.submit:before', ['form' => $form, 'page' => $page, 'values' => $values]);
-			// stored (unless the form says no); the mails and other actions follow in the next steps
+			// stored (unless the form says no), then the mails and the webhook –
+			// their results in the submission's log
 			$submission = fwSubmissions::store($form, $page, $shown, $values);
+			$submission = fwActions::run($form, $page, $submission);
+			$team = $submission['team'];
+			unset($submission['team']);
+			if ($submission['stored'] ?? true) fwSubmissions::write($submission);
 			kirby()->trigger('formwizard.submit:after', ['form' => $form, 'page' => $page, 'submission' => $submission]);
 		} catch (\Throwable $e) {
 			kirby()->trigger('formwizard.failed', ['form' => $form, 'error' => $e->getMessage()]);
+			return ['status' => 'failed', 'values' => $back];
+		}
+		// the team's mail failed and nothing was stored: the request would be lost
+		if ($team === false && ($submission['stored'] ?? true) === false) {
 			return ['status' => 'failed', 'values' => $back];
 		}
 		return ['status' => 'sent', 'values' => self::forThanks($values)];

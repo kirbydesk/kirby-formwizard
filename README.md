@@ -13,7 +13,11 @@ Form builder for Kirby projects with the Pagewizard and the Project Wizard: buil
 - **Block „Formular“** (`pwform`, activate it in the Project Wizard): tagline, heading, text, layout and style as the other blocks, plus the form (active forms only) and an own thank-you text. In the Panel it shows the form's fields; „Formular bearbeiten →“ leads to the Project Wizard.
 - **On the website:** all field types, „Nur zeigen, wenn“ live (without JavaScript the fields stay visible), checked on the server after sending, errors at the fields, the values kept; then the thank-you text or the page of thanks. Invisible spam protection (a trap field, at least 3 seconds). The URLs of the forms answer 404.
 - **Eingänge:** stored as JSON in `content/.formwizard/submissions/<form>/` (unless the form says „Nur versenden“): list over all forms, filter by form and status, search, CSV export; one submission with „Erledigt“, „Antworten“, „Löschen“. Deleted after the period set in *Formulare › Einstellungen* (default 180 days).
-- **Not yet:** no mails – that comes with step 7.
+- **After sending** (tab *Nach dem Absenden*), in this order:
+  - **Mail an das Team:** to the form's recipients, else the default recipient of the Project Wizard; „Je nach Auswahl an andere Adressen“ (e.g. Anliegen = Angebot → vertrieb@…). Subject with placeholders `{name}`, `{form}`, `{page}`, `{site}`; reply goes to the sender; text and HTML, with a link to the submission in the Panel.
+  - **Bestätigung an den Absender** (to the first e-mail field): own subject and text, optionally with a copy of the details.
+  - **Webhook:** the details as JSON (POST) to an address (CRM, Zapier, n8n).
+  - Each writes a line into the submission's **log** (Panel). The mails go through the Project Wizard's mail server (*Einstellungen › E-Mail-Versand*). If the team's mail fails and the form stores nothing, the visitor sees an error instead of the thanks.
 
 **Needs** kirby-projectwizard with the plugin tabs and the mail server (branch `claude/loving-fermi-q6ap63`).
 

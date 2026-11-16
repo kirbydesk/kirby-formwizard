@@ -141,6 +141,118 @@ return array_merge([
 						'required' => true,
 						'when'     => ['success' => 'page'],
 					],
+
+					// the mail to the team
+					'headlineTeam' => [
+						'label' => 'formwizard.team',
+						'type'  => 'headline',
+					],
+					'mailTeam' => [
+						'label'     => 'formwizard.team.send',
+						'type'      => 'toggle',
+						'default'   => true,
+						'translate' => false,
+						'text'      => ['formwizard.off', 'formwizard.on'],
+						'width'     => '1/3',
+					],
+					'recipients' => [
+						'label'       => 'formwizard.team.recipients',
+						'type'        => 'text',
+						'translate'   => false,
+						'placeholder' => 'formwizard.team.recipients.placeholder',
+						'help'        => 'formwizard.team.recipients.help',
+						'width'       => '2/3',
+						'when'        => ['mailTeam' => true],
+					],
+					'routes' => [
+						'label'     => 'formwizard.team.routes',
+						'type'      => 'structure',
+						'translate' => false,
+						'help'      => 'formwizard.team.routes.help',
+						'when'      => ['mailTeam' => true],
+						'columns'   => ['when' => ['width' => '1/2'], 'to' => ['width' => '1/2']],
+						'fields'    => [
+							'when' => [
+								'label'    => 'formwizard.team.routes.when',
+								'type'     => 'select',
+								'required' => true,
+								'options'  => ['type' => 'query', 'query' => 'page.fwConditions'],
+							],
+							'to' => [
+								'label'       => 'formwizard.team.routes.to',
+								'type'        => 'text',
+								'required'    => true,
+								'placeholder' => 'vertrieb@…',
+							],
+						],
+					],
+					'mailSubject' => [
+						'label'       => 'formwizard.team.subject',
+						'type'        => 'text',
+						'placeholder' => 'formwizard.team.subject.placeholder',
+						'help'        => 'formwizard.placeholders.help',
+						'when'        => ['mailTeam' => true],
+					],
+
+					// the confirmation to the sender
+					'headlineConfirm' => [
+						'label' => 'formwizard.confirm',
+						'type'  => 'headline',
+					],
+					'confirm' => [
+						'label'     => 'formwizard.confirm.send',
+						'type'      => 'toggle',
+						'translate' => false,
+						'text'      => ['formwizard.off', 'formwizard.on'],
+						'help'      => 'formwizard.confirm.help',
+						'width'     => '1/3',
+					],
+					'confirmCopy' => [
+						'label'     => 'formwizard.confirm.copy',
+						'type'      => 'toggle',
+						'default'   => true,
+						'translate' => false,
+						'text'      => ['formwizard.off', 'formwizard.on'],
+						'width'     => '2/3',
+						'when'      => ['confirm' => true],
+					],
+					'confirmSubject' => [
+						'label'       => 'formwizard.confirm.subject',
+						'type'        => 'text',
+						'placeholder' => 'formwizard.confirm.subject.placeholder',
+						'when'        => ['confirm' => true],
+					],
+					'confirmText' => [
+						'label'       => 'formwizard.confirm.text',
+						'type'        => 'textarea',
+						'buttons'     => false,
+						'size'        => 'small',
+						'placeholder' => 'formwizard.confirm.text.default',
+						'help'        => 'formwizard.placeholders.help',
+						'when'        => ['confirm' => true],
+					],
+
+					// a webhook (CRM, Zapier, n8n …)
+					'headlineWebhook' => [
+						'label' => 'formwizard.webhook',
+						'type'  => 'headline',
+					],
+					'webhook' => [
+						'label'     => 'formwizard.webhook.send',
+						'type'      => 'toggle',
+						'translate' => false,
+						'text'      => ['formwizard.off', 'formwizard.on'],
+						'width'     => '1/3',
+					],
+					'webhookUrl' => [
+						'label'     => 'formwizard.webhook.url',
+						'type'      => 'url',
+						'translate' => false,
+						'required'  => true,
+						'help'      => 'formwizard.webhook.help',
+						'width'     => '2/3',
+						'when'      => ['webhook' => true],
+					],
 				],
 			],
 			'settings' => [

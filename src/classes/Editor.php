@@ -17,7 +17,12 @@ class fwEditor
 	/** The fields of a form by tab of the editor */
 	public const TABS = [
 		'fields'   => ['fields'],
-		'after'    => ['success', 'successtext', 'successpage'],
+		'after'    => [
+			'success', 'successtext', 'successpage',
+			'headlineteam', 'mailteam', 'recipients', 'routes', 'mailsubject',
+			'headlineconfirm', 'confirm', 'confirmcopy', 'confirmsubject', 'confirmtext',
+			'headlinewebhook', 'webhook', 'webhookurl',
+		],
 		'settings' => ['buttontext', 'privacypage', 'store', 'closed', 'closedtext'],
 	];
 

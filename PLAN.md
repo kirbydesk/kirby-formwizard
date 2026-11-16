@@ -73,7 +73,7 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
    - „Form Wizard › Eingänge“ mit Liste, Filter, Suche, Ansicht, neu/erledigt, Löschen und CSV
    - Zähler im Menü, Rechte pro Benutzerrolle (bauen bzw. Eingänge lesen)
 6. ✅ **Mailserver im Project Wizard:** `pwMail`, Seite „E-Mail-Versand“ (Branch `claude/loving-fermi-q6ap63` in kirby-projectwizard).
-7. **Aktionen:** Mail ans Team mit Weiterleitung je nach Auswahl, Bestätigung, Webhook, Protokoll beim Eingang.
+7. ✅ **Aktionen:** Mail ans Team mit Weiterleitung je nach Auswahl, Bestätigung, Webhook, Protokoll beim Eingang.
 8. **Uploads:**
    - Feld mit Typen und Größe, Ablage beim Eingang (geschützt, Download im Panel) bzw. Anhang
    - Mit dem Eingang gelöscht
