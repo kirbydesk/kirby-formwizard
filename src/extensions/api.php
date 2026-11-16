@@ -1,8 +1,16 @@
 <?php
 
+use Kirby\Exception\NotFoundException;
+use Kirby\Exception\PermissionException;
+
 /**
- * For the Panel: the fields of a form (the preview of the block)
+ * For the Panel: the fields of a form (the preview of the block); a
+ * submission marked new/done, deleted
  */
+$guard = function () {
+	if (!fwSubmissionsView::allowed()) throw new PermissionException(message: 'Not allowed.');
+};
+
 return [
 	'routes' => [
 		[
@@ -32,6 +40,25 @@ return [
 					'link'   => $form->panel()->url(true),
 					'fields' => $fields,
 				]];
+			},
+		],
+		[
+			'pattern' => 'formwizard/submissions/(:any)/status',
+			'method'  => 'POST',
+			'action'  => function (string $id) use ($guard) {
+				$guard();
+				$record = fwSubmissions::setStatus($id, (string) kirby()->request()->get('status'));
+				if ($record === null) throw new NotFoundException(message: 'Not found.');
+				return ['status' => $record['status']];
+			},
+		],
+		[
+			'pattern' => 'formwizard/submissions/(:any)',
+			'method'  => 'DELETE',
+			'action'  => function (string $id) use ($guard) {
+				$guard();
+				if (!fwSubmissions::delete($id)) throw new NotFoundException(message: 'Not found.');
+				return ['deleted' => $id];
 			},
 		],
 	],

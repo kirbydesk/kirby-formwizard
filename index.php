@@ -15,6 +15,8 @@ require_once __DIR__ . '/src/classes/Uploads.php';
 require_once __DIR__ . '/src/classes/Spam.php';
 require_once __DIR__ . '/src/classes/Render.php';
 require_once __DIR__ . '/src/classes/Submit.php';
+require_once __DIR__ . '/src/classes/Submissions.php';
+require_once __DIR__ . '/src/classes/SubmissionsView.php';
 require_once __DIR__ . '/src/classes/FormPage.php';
 
 // the block: a form on a page
@@ -24,6 +26,10 @@ Kirby::plugin('kirbydesk/kirby-formwizard', [
 	'options' => [
 		// the slug of the page holding the forms (made on the first visit of the Panel)
 		'slug' => 'forms',
+		// days a submission is kept (0: for ever)
+		'retention' => 180,
+		// (the counts of the submissions)
+		'cache' => true,
 	],
 
 	/* -------------- Extensions --------------*/

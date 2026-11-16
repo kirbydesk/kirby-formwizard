@@ -57,11 +57,11 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
 3. ✅ **Formular auf der Website:**
    - Block `pwform` mit Tagline, Überschrift, Text, Layout und Stil wie die anderen Blöcke, dazu die Auswahl des Formulars
    - Das Snippet zeigt alle Feldtypen; Bedingungen funktionieren auch ohne JavaScript serverseitig, mit JavaScript live
-4. ✅ **Absenden** (noch ohne Speichern und Mail – die folgen mit Schritt 5 und 7):
+4. ✅ **Absenden:**
    - Route, Prüfung auf dem Server, Weiterleitung nach dem Absenden (wie beim Kontaktformular, ohne JavaScript nutzbar)
    - Fehler am Feld, Danke-Text oder Weiterleitung
    - Unsichtbarer Spamschutz
-5. **Eingänge:**
+5. ✅ **Eingänge:**
    - Speichern
    - „Form Wizard › Eingänge“ mit Liste, Filter, Suche, Ansicht, neu/erledigt, Löschen und CSV
    - Zähler im Menü, Rechte pro Benutzerrolle (bauen bzw. Eingänge lesen)

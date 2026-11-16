@@ -25,6 +25,10 @@ class FormwizardFormPage extends Page
 	public function fwInfo(): string
 	{
 		$info  = tt('formwizard.form.info.fields', null, ['count' => $this->fwFieldCount()]);
+		if ($count = fwSubmissions::count($this)) {
+			$new   = fwSubmissions::countNew($this);
+			$info .= ' · ' . tt('formwizard.form.info.submissions', null, ['count' => $count]) . ($new ? ' (' . tt('formwizard.form.info.new', null, ['count' => $new]) . ')' : '');
+		}
 		$pages = $this->fwUsage();
 		if ($pages !== []) {
 			$titles = array_map(fn (Page $p) => $p->title()->value(), array_slice($pages, 0, 3));

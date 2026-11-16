@@ -72,12 +72,14 @@ class fwForms
 		if (page(self::slug())) return null; // the slug is taken by another page
 
 		$kirby = kirby();
+		// (in the language of the user who opens the Panel first)
+		$title = \Kirby\Toolkit\I18n::translate('formwizard.forms', 'Forms', $kirby->user()?->language() ?? 'en');
 		try {
-			return $kirby->impersonate('kirby', function () use ($kirby) {
+			return $kirby->impersonate('kirby', function () use ($kirby, $title) {
 				$page = $kirby->site()->createChild([
 					'slug'     => self::slug(),
 					'template' => 'formwizard-forms',
-					'content'  => ['title' => t('formwizard.forms', 'Forms')],
+					'content'  => ['title' => $title],
 				]);
 				return $page->changeStatus('unlisted');
 			});

@@ -60,8 +60,9 @@ class fwSubmit
 
 		try {
 			kirby()->trigger('formwizard.submit:before', ['form' => $form, 'page' => $page, 'values' => $values]);
-			// (storing, mails and the other actions follow in the next steps)
-			kirby()->trigger('formwizard.submit:after', ['form' => $form, 'page' => $page, 'values' => $values]);
+			// stored (unless the form says no); the mails and other actions follow in the next steps
+			$submission = fwSubmissions::store($form, $page, $shown, $values);
+			kirby()->trigger('formwizard.submit:after', ['form' => $form, 'page' => $page, 'submission' => $submission]);
 		} catch (\Throwable $e) {
 			kirby()->trigger('formwizard.failed', ['form' => $form, 'error' => $e->getMessage()]);
 			return ['status' => 'failed', 'values' => $back];

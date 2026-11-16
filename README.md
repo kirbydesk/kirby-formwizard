@@ -12,7 +12,8 @@ Form builder for Kirby projects with the Pagewizard and the Project Wizard: buil
 - The URLs of the forms answer with the error page (404).
 - **Block „Formular“** (`pwform`, activate it in the Project Wizard): tagline, heading, text, layout and style as the other blocks, plus the form (active forms only) and an own thank-you text. In the Panel it shows the form's fields.
 - **On the website:** all field types, „Nur zeigen, wenn“ live (without JavaScript the fields stay visible), checked on the server after sending (required, e-mail, phone, number range, length, date, options, files), errors at the fields, the values kept; then the thank-you text (`{{ key }}` replaced) or the page of thanks. Invisible spam protection (a trap field, at least 3 seconds).
-- **Not yet:** a valid submission is neither stored nor mailed – that comes with the next steps.
+- **Eingänge:** each submission stored as JSON in `content/.formwizard/submissions/<form>/` (unless the form says „Nur versenden“). *Form Wizard › Eingänge*: all forms in one list, filter by form and status, search, 30 a page, CSV export (Excel-ready); one submission with its fields, „Erledigt“/„Wieder als neu“, „Antworten“ (mailto), „Löschen“. The count of new ones in the menu and on the form's button „Eingänge (n)“. Deleted after 180 days (option `retention`).
+- **Not yet:** no mails – that comes with steps 6 and 7.
 
 ## Styling
 
@@ -23,7 +24,8 @@ CSS variables `--pwform-*` per colour variant (field background, border, text, f
 ```php
 // site/config/config.php
 'kirbydesk.kirby-formwizard' => [
-	'slug' => 'forms', // the page holding the forms
+	'slug'      => 'forms', // the page holding the forms
+	'retention' => 180,     // days a submission is kept (0: for ever)
 ],
 ```
 

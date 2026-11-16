@@ -1,6 +1,14 @@
 /* The Panel menu: "Forms" and "Submissions" indented below "Form Wizard"
    (only with the menu open – closed, it shows the icons alone) */
-.k-panel[data-menu="true"] .k-panel-menu-button:is([href$="/formwizard/forms"], [href$="/formwizard/submissions"]) {
+.k-panel[data-menu="true"] .k-panel-menu-button:is([href$="formwizard/forms"], [href$="formwizard/submissions"]) {
 	padding-inline-start: calc(7px + var(--spacing-5));
 	font-size: var(--text-sm);
+}
+
+/* the count of new submissions: at the end of the row, not on its corner */
+.k-panel[data-menu="true"] .k-panel-menu-button:is([href$="formwizard"], [href$="formwizard/submissions"]) .k-button-badge {
+	position: static;
+	inset: auto;
+	transform: none;
+	margin-inline-start: auto;
 }
