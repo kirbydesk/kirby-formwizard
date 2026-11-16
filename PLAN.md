@@ -18,7 +18,7 @@ Vorbild für die Ideen: [Kirby DreamForm](https://github.com/tobimori/kirby-drea
 | Spamschutz | Immer an: verstecktes Feld, Mindestzeit, CSRF-Schutz. Wahlweise ein Captcha (Friendly Captcha, Cloudflare Turnstile, hCaptcha) und eine Begrenzung der Sendungen |
 | Mehrsprachigkeit | Texte der Formulare pro Sprache |
 | Kontaktformular | `kirbyblock-contactform` bleibt unverändert |
-| Panel | Ein Menüpunkt „Form Wizard“ mit den Unterpunkten „Formulare“ und „Eingänge“ |
+| Panel | **Formulare als Reiter im Project Wizard** (zwischen „Blöcke“ und „Einstellungen“), Unternavigation im Dropdown: die Formulare, Neues Formular, Alle Formulare, Eingänge, Einstellungen (Spamschutz, Aufbewahrung). Links im Kirby-Menü bleibt nur **„Eingänge“** – für Benutzer, die Eingänge lesen, aber den Project Wizard nicht sehen. Mockup: `mockups/formwizard-projectwizard.html` (ersetzt den Menüpunkt „Form Wizard“ aus `mockups/formwizard.html`) |
 | Project Wizard | Gestaltung unter Blöcke › Formular. Spamschutz und Aufbewahrung als eigene Seite im Zahnrad-Menü, wie „Übersetzung“ beim Translate Wizard |
 | Mailserver (SMTP) | Wird im Project Wizard angelegt, als allgemeine Projekt-Einstellung für Plugins, die Mails verschicken. Das Kontaktformular bleibt eigenständig mit seinem eigenen Versand |
 | Ein Repo | `kirby-formwizard` bringt alles mit, auch den Block. `ProjectConfig::detectBlocks()` findet Blöcke schon heute über `pwConfig::register()`, egal wie der Ordner heißt |
@@ -43,6 +43,14 @@ Die Liste unter „Eingänge“ ist eine eigene Panel-Ansicht (Vue).
 - **Panel:** Seite „E-Mail-Versand“ im Zahnrad-Menü (nur für Admins) mit Server, Port, Verschlüsselung, Benutzer, Passwort, Absender, Absendername, Standard-Empfänger und Test-Mail.
 - **Speicherort:** `content/.projectwizard/mail.json`, Schlüssel in `site/config/mail.key`.
 - **Kontaktformular:** bleibt unverändert mit seinem eigenen Versand. Es wird nichts daraus übernommen.
+
+## Umbau: Formulare in den Project Wizard
+
+Schritt 2 hat die Formulare als Seiten unter einem eigenen Menüpunkt „Form Wizard“ gebaut. Das wird umgebaut:
+- **Speicher bleibt:** Formulare bleiben Seiten (Übersetzung, Entwürfe, Sperren), Felder bleiben Blocks. Sie erscheinen aber nicht mehr als Seiten im Panel.
+- **Project Wizard:** Reiter „Formulare“ mit Dropdown. Ein Formular sieht aus wie ein Block im Project Wizard: Reiter Felder · Nach dem Absenden · Einstellungen, rechts die Vorschau. Der Formular-Editor wird dafür in den Project Wizard eingebaut. Der Form Wizard meldet den Reiter beim Project Wizard an, damit nichts Formular-Eigenes fest in `Overview.vue` steht.
+- **Kirby-Menü:** nur noch „Eingänge“ mit Zähler. Die Menüpunkte „Form Wizard“ und „Formulare“ fallen weg.
+- **Formulare › Einstellungen:** Spamschutz und Aufbewahrung.
 
 ## Schritte
 

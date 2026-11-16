@@ -166,7 +166,7 @@
 </head>
 <body>
 <h1>Formulare im Project Wizard</h1>
-<p class="lead">Variante: kein eigener Menüpunkt links, sondern „Formulare“ als Reiter oben im Project Wizard, zwischen „Blöcke“ und „Einstellungen“ – mit der Unternavigation im Dropdown. Links das Panel, rechts die Website. Oben die Stelle im Panel wählen; die Website reagiert auf den Formular-Bau. Felder lassen sich hinzufügen, ziehen, bearbeiten und löschen. Orange gestrichelt: neu gegenüber dem Kontaktformular. Erläuterungen in Orange gehören nicht zum Plugin.</p>
+<p class="lead">Variante: „Formulare“ als Reiter oben im Project Wizard, zwischen „Blöcke“ und „Einstellungen“ – mit der Unternavigation im Dropdown. Links im Kirby-Menü bleibt nur „Eingänge“. Links das Panel, rechts die Website. Oben die Stelle im Panel wählen; die Website reagiert auf den Formular-Bau. Felder lassen sich hinzufügen, ziehen, bearbeiten und löschen. Orange gestrichelt: neu gegenüber dem Kontaktformular. Erläuterungen in Orange gehören nicht zum Plugin.</p>
 <div class="switch" id="view"></div>
 <div class="frame" id="frame"></div>
 <div class="notes" id="notes"></div>
@@ -425,12 +425,13 @@
 
   /* ---------- notes ---------- */
   const NOTES = {
-    list: ['<b>Reiter „Formulare“</b> oben im Project Wizard, zwischen „Blöcke“ und „Einstellungen“. Das Dropdown ist die Unternavigation: die Formulare selbst (wie die Blöcke unter „Blöcke“), „Neues Formular“, „Eingänge“ und „Einstellungen“ (Spamschutz, Aufbewahrung). Links im Kirby-Menü gibt es keinen eigenen Punkt mehr – nur die Zahl der neuen Eingänge am „Project Wizard“.',
+    list: ['<b>Reiter „Formulare“</b> oben im Project Wizard, zwischen „Blöcke“ und „Einstellungen“. Das Dropdown ist die Unternavigation: die Formulare selbst (wie die Blöcke unter „Blöcke“), „Neues Formular“, „Eingänge“ und „Einstellungen“ (Spamschutz, Aufbewahrung). Links im Kirby-Menü bleibt nur „Eingänge“ (mit der Zahl der neuen).',
+      '<b>Eingänge</b> stehen zusätzlich links im Kirby-Menü – für alle, die Eingänge lesen sollen, aber den Project Wizard nicht sehen.',
       '<b>Technisch</b> bleiben die Formulare Seiten (Übersetzung, Entwürfe, Sperren bleiben), aber sie erscheinen nicht mehr als Seiten im Panel: bearbeitet werden sie nur hier im Project Wizard.'],
     build: ['<b>Ein Formular</b> wie ein Block im Project Wizard: oben sein Name, darunter die Reiter Felder · Nach dem Absenden · Einstellungen, rechts die Vorschau auf der Website (in der Spalte, in der sonst die Vorschau der Blöcke steht). Zum Ausprobieren: Felder ziehen, ✎ öffnen, rechts „Angebot anfragen“ wählen.',
       '<b>Eingänge (n)</b> oben rechts führt in die Eingänge, schon gefiltert auf dieses Formular.'],
-    subs: ['<b>Eingänge</b> im Project Wizard über die volle Breite (keine Vorschau): Filter, Suche, Ansicht eines Eingangs, CSV.',
-      '<b>Offen – wer darf?</b> Den Project Wizard sehen bisher die, die das Projekt einrichten. Sollen Redakteure (z. B. Vertrieb) Eingänge lesen, ohne den übrigen Project Wizard zu sehen? Dann würde ich ihnen den Reiter „Formulare“ allein zeigen – oder „Eingänge“ zusätzlich links im Menü lassen.'],
+    subs: ['<b>Eingänge links im Kirby-Menü</b> – eine eigene Panel-Seite außerhalb des Project Wizard, mit der Zahl der neuen. So können Redakteure (z. B. Vertrieb) Eingänge lesen und erledigen, ohne den Project Wizard zu sehen (Rechte je Benutzerrolle).',
+      '<b>Aus dem Project Wizard</b> führen „Eingänge“ im Dropdown „Formulare“ und der Knopf „Eingänge (n)“ an einem Formular hierher, schon gefiltert.'],
     settings: ['<b>Formulare › Einstellungen:</b> was für alle Formulare gilt – Spamschutz und Aufbewahrung. Der Mailserver bleibt unter Einstellungen › E-Mail-Versand (für alle Plugins).'],
     design: ['<b>Gestaltung</b> des Blocks bleibt, wo alle Blöcke sind: Blöcke › Formular (Farben der Felder je Variante, Abstände, Ecken).'],
     mail: ['<b>E-Mail-Versand</b> unter Einstellungen – gibt es schon (Schritt 6).'],
@@ -557,7 +558,7 @@
       const [ic, title] = titles[S.view];
       const right = S.view === 'build' ? '<span class="pill" style="font-size:11px;background:#e7f6ea;color:#1a7f37">● Aktiv</span><button class="kb" data-go="subs" data-inbox="Projektanfrage">✉ Eingänge (' + formCount('Projektanfrage') + ')</button>'
         : S.view === 'list' ? '<button class="kb pri">＋ Neues Formular</button>'
-        : S.view === 'subs' ? '<button class="kb">CSV exportieren</button>' : '';
+        : '';
       const body = ({ list: overview, build, subs: inbox, settings: fsettings, design, mail: mailview })[S.view]().replace(/<a href="#" data-inbox="Projektanfrage" style="margin-left:auto[^>]*>.*?<\/a>/, '');
       const withPreview = ['build', 'design', 'list'].includes(S.view);
       main = '<div class="pwhead"><span class="ic">' + ic + '</span><h2>' + title + '</h2><div class="right">' + right + '</div></div>' +
@@ -566,8 +567,9 @@
     const m = (on, ic, t, extra, view) => '<a' + (view ? ' data-go="' + view + '"' : '') + ' class="' + (on ? 'on' : '') + '"><i>' + ic + '</i>' + t + (extra || '') + '</a>';
     document.getElementById('frame').innerHTML = '<nav class="menu"><div class="site-t">example.de</div>' +
       m(S.view === 'block', '⌂', 'Website', '', 'block') + m(false, '☺', 'Accounts') + m(false, '⚙', 'System') +
-      m(S.view !== 'block', '✦', 'Project Wizard', badge, 'list') + '</nav>' +
-      '<div class="pw">' + (S.view === 'block' ? '' : bar) + main + '</div>';
+      '<span class="grp">' + m(S.view === 'subs', '✉', 'Eingänge', badge, 'subs') + '</span>' +
+      m(!['block', 'subs'].includes(S.view), '✦', 'Project Wizard', '', 'list') + '</nav>' +
+      '<div class="pw">' + (['block', 'subs'].includes(S.view) ? '' : bar) + main + '</div>';
     renderSite();
     document.getElementById('notes').innerHTML = (NOTES[S.view] || []).map((n) => '<p>' + n + '</p>').join('');
   }
