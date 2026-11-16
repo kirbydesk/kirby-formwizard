@@ -20,7 +20,7 @@ Vorbild für die Ideen: [Kirby DreamForm](https://github.com/tobimori/kirby-drea
 | Kontaktformular | `kirbyblock-contactform` bleibt unverändert |
 | Panel | Ein Menüpunkt „Form Wizard“ mit den Unterpunkten „Formulare“ und „Eingänge“ |
 | Project Wizard | Gestaltung unter Blöcke › Formular. Spamschutz und Aufbewahrung als eigene Seite im Zahnrad-Menü, wie „Übersetzung“ beim Translate Wizard |
-| Mailserver (SMTP) | Wird im Project Wizard angelegt, als allgemeine Projekt-Einstellung für alle Plugins, die Mails verschicken (Form Wizard, Kontaktformular) |
+| Mailserver (SMTP) | Wird im Project Wizard angelegt, als allgemeine Projekt-Einstellung für Plugins, die Mails verschicken. Das Kontaktformular bleibt eigenständig mit seinem eigenen Versand |
 | Ein Repo | `kirby-formwizard` bringt alles mit, auch den Block. `ProjectConfig::detectBlocks()` findet Blöcke schon heute über `pwConfig::register()`, egal wie der Ordner heißt |
 
 ## Technik
@@ -38,12 +38,11 @@ Vorbild für die Ideen: [Kirby DreamForm](https://github.com/tobimori/kirby-drea
 
 Die Liste unter „Eingänge“ ist eine eigene Panel-Ansicht (Vue).
 
-**Der Mailserver** zieht aus `kirbyblock-contactform` in den Project Wizard:
-- **Klasse:** `pwMail` in `kirby-projectwizard` (`settings()`, `save()`, `ready()`, `send()`, Test-Mail). Das Passwort bleibt verschlüsselt wie bisher.
-- **Panel:** eine eigene Seite „E-Mail-Versand“ im Zahnrad-Menü mit Server, Port, Verschlüsselung, Benutzer, Passwort, Absender, Standard-Empfänger und Test-Mail. Das ist die heutige `ContactformMail.vue`, nur allgemein.
+**Der Mailserver** ist eine eigene Einstellung des Project Wizard:
+- **Klasse:** `pwMail` in `kirby-projectwizard` (`settings()`, `save()`, `ready()`, `send()`, `recipient()`, Test-Mail). Das Passwort wird verschlüsselt gespeichert.
+- **Panel:** Seite „E-Mail-Versand“ im Zahnrad-Menü (nur für Admins) mit Server, Port, Verschlüsselung, Benutzer, Passwort, Absender, Absendername, Standard-Empfänger und Test-Mail.
 - **Speicherort:** `content/.projectwizard/mail.json`, Schlüssel in `site/config/mail.key`.
-- **Übernahme:** Gibt es noch keine `mail.json`, werden die Einstellungen aus `contactform.json` übernommen, samt Schlüssel aus `contactform.key`. Bestehende Projekte senden ohne Zutun weiter.
-- **Kontaktformular:** Es nutzt `pwMail`. Der Tab „Versand“ unter Blöcke › Kontaktformular verweist auf die neue Seite. Empfänger, Betreff und Bestätigung pro Block bleiben, wie sie sind.
+- **Kontaktformular:** bleibt unverändert mit seinem eigenen Versand. Es wird nichts daraus übernommen.
 
 ## Schritte
 
@@ -65,7 +64,7 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
    - Speichern
    - „Form Wizard › Eingänge“ mit Liste, Filter, Suche, Ansicht, neu/erledigt, Löschen und CSV
    - Zähler im Menü, Rechte pro Benutzerrolle (bauen bzw. Eingänge lesen)
-6. **Mailserver im Project Wizard:** `pwMail`, Seite „E-Mail-Versand“, Übernahme aus dem Kontaktformular, Kontaktformular darauf umstellen.
+6. ✅ **Mailserver im Project Wizard:** `pwMail`, Seite „E-Mail-Versand“ (Branch `claude/loving-fermi-q6ap63` in kirby-projectwizard).
 7. **Aktionen:** Mail ans Team mit Weiterleitung je nach Auswahl, Bestätigung, Webhook, Protokoll beim Eingang.
 8. **Uploads:**
    - Feld mit Typen und Größe, Ablage beim Eingang (geschützt, Download im Panel) bzw. Anhang

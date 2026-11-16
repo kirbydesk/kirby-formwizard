@@ -15,7 +15,7 @@ Guidance for Claude Code when working on this plugin.
 - **Website:** `fwRender` builds the form (conditions as `data-when`, script `assets/formwizard.js` inline once per page); it posts to `formwizard/submit`, `fwSubmit` checks it (only fields whose condition is met), the result goes into the session (`formwizard.<block id>`) and the page shows it after the redirect. `fwSpam`: trap field + signed time stamp.
 - **Panel menu:** one entry "Form Wizard" (area `formwizard`) with "Forms" and "Submissions" (areas `formwizard-forms`, `formwizard-submissions`) below it – shown only inside the Form Wizard (`fwForms::inArea()`), indented by `src/index.css`. The forms are pages of the `site` area; the plugin extends `site` so "Pages" isn't marked there.
 - **Submissions** are JSON files (`fwSubmissions`): `content/.formwizard/submissions/<form uuid>/<Ymd-His-rand>.json`, the fields as they were sent (label, type, value, display text). Counts cached in the plugin cache. Panel views in the area `formwizard-submissions` (list with filters in the query, detail), CSV as a Panel request, status/delete via the plugin API. Area closures (`menu`, `current`) must accept being called without arguments – Kirby resolves them when sending a view.
-- **The mail server** lives in the Project Wizard (`pwMail`, step 6), shared with kirbyblock-contactform.
+- **The mail server** lives in the Project Wizard (`pwMail`: `ready()`, `send([...])`, `recipient()`); kirbyblock-contactform keeps its own and is not touched.
 
 ## Directories
 
