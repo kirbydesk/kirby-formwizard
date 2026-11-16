@@ -58,12 +58,23 @@ class fwSubmit
 		$back = array_filter($values, fn ($k) => ($fields[$k]['type'] ?? '') !== 'fwhidden', ARRAY_FILTER_USE_KEY);
 		if ($errors !== []) return ['status' => 'invalid', 'errors' => $errors, 'values' => $back];
 
+		// the uploads of the fields shown: their names as the field's value
+		$uploads = [];
+		foreach ($shown as $key => $field) {
+			if ($field['type'] !== 'fwfile') continue;
+			$list = array_values(array_filter($files[$key] ?? [], fn ($f) => ($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK));
+			$values[$key] = array_map(fn ($f) => fwUploads::safeName($f['name']), $list);
+			if ($list !== []) $uploads[$key] = $list;
+		}
+
 		try {
 			kirby()->trigger('formwizard.submit:before', ['form' => $form, 'page' => $page, 'values' => $values]);
-			// stored (unless the form says no), then the mails and the webhook –
-			// their results in the submission's log
+			// stored (unless the form says no), the files put in place, then
+			// the mails and the webhook – their results in the submission's log
 			$submission = fwSubmissions::store($form, $page, $shown, $values);
+			$submission['files'] = fwUploads::keep($form, $submission, $uploads);
 			$submission = fwActions::run($form, $page, $submission);
+			$submission['files'] = fwUploads::finish($submission['files']);
 			$team = $submission['team'];
 			unset($submission['team']);
 			if ($submission['stored'] ?? true) fwSubmissions::write($submission);

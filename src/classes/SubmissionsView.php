@@ -35,7 +35,11 @@ class fwSubmissionsView
 				'type'  => $f['type'],
 				'value' => $f['display'],
 			], array_values(array_filter($record['fields'], fn ($f) => $f['display'] !== ''))),
-			'files'    => $record['files'] ?? [],
+			'files'    => array_map(fn ($f) => [
+				'name' => $f['name'],
+				'size' => fwUploads::size((int) ($f['size'] ?? 0)),
+				'url'  => \Kirby\Panel\Panel::url('formwizard/submissions/' . $record['id'] . '/files/' . rawurlencode($f['name'])),
+			], $record['files'] ?? []),
 			'log'      => $record['log'] ?? [],
 		];
 	}

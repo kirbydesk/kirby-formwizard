@@ -81,12 +81,18 @@ class fwActions
 			. '<p style="font:12px/1.5 sans-serif;color:#666;margin:16px 0 0"><a href="' . esc($page->url(), 'attr') . '">' . esc($page->url()) . '</a>'
 			. ($panel ? ' · <a href="' . htmlspecialchars($panel) . '">' . esc(t('formwizard.mail.panel')) . '</a>' : '') . '</p>';
 
-		return self::mail([
-			'to'      => $to,
-			'replyTo' => $reply,
-			'subject' => $subject,
-			'body'    => ['text' => $text, 'html' => $html],
-		], tt('formwizard.log.team', null, ['to' => implode(', ', $to)]));
+		// the uploads as attachments (if the form says so)
+		$attach = in_array(fwUploads::mode($form, $submission['stored'] ?? true), ['attach', 'both'], true)
+			? array_values(array_filter(array_column($submission['files'] ?? [], 'path'), 'is_file'))
+			: [];
+
+		return self::mail(array_filter([
+			'to'          => $to,
+			'replyTo'     => $reply,
+			'subject'     => $subject,
+			'body'        => ['text' => $text, 'html' => $html],
+			'attachments' => $attach,
+		]), tt('formwizard.log.team', null, ['to' => implode(', ', $to)]) . ($attach ? ' · ' . tt('formwizard.log.attachments', null, ['count' => count($attach)]) : ''));
 	}
 
 	/* -------------- The confirmation to the sender --------------*/
@@ -194,7 +200,6 @@ class fwActions
 			if ($f['type'] === 'fwhidden' || $f['display'] === '') continue;
 			$lines[] = $f['label'] . ':' . ($f['type'] === 'fwtextarea' ? "\n" : ' ') . $f['display'];
 		}
-		foreach ($submission['files'] ?? [] as $file) $lines[] = t('formwizard.submission.files') . ': ' . $file['name'];
 		return implode("\n", $lines);
 	}
 

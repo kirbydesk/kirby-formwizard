@@ -21,6 +21,7 @@ class fwEditor
 			'success', 'successtext', 'successpage',
 			'headlineteam', 'mailteam', 'recipients', 'routes', 'mailsubject',
 			'headlineconfirm', 'confirm', 'confirmcopy', 'confirmsubject', 'confirmtext',
+			'headlineuploads', 'uploads',
 			'headlinewebhook', 'webhook', 'webhookurl',
 		],
 		'settings' => ['buttontext', 'privacypage', 'store', 'closed', 'closedtext'],

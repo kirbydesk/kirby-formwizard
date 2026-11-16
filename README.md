@@ -17,6 +17,7 @@ Form builder for Kirby projects with the Pagewizard and the Project Wizard: buil
   - **Mail an das Team:** to the form's recipients, else the default recipient of the Project Wizard; „Je nach Auswahl an andere Adressen“ (e.g. Anliegen = Angebot → vertrieb@…). Subject with placeholders `{name}`, `{form}`, `{page}`, `{site}`; reply goes to the sender; text and HTML, with a link to the submission in the Panel.
   - **Bestätigung an den Absender** (to the first e-mail field): own subject and text, optionally with a copy of the details.
   - **Webhook:** the details as JSON (POST) to an address (CRM, Zapier, n8n).
+  - **Uploads:** per form „Beim Eingang ablegen“ (protected in the submission's folder, downloaded through the Panel only, deleted with it), „Nur an die Mail hängen“ or both; the type is checked by the file's content, the size by the field (at most what PHP allows).
   - Each writes a line into the submission's **log** (Panel). The mails go through the Project Wizard's mail server (*Einstellungen › E-Mail-Versand*). If the team's mail fails and the form stores nothing, the visitor sees an error instead of the thanks.
 
 **Needs** kirby-projectwizard with the plugin tabs and the mail server (branch `claude/loving-fermi-q6ap63`).

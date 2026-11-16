@@ -235,4 +235,12 @@
 	// (placeholders in the Panel: Kirby fills them – the form is the page)
 	'formwizard.team.subject.placeholder' => 'Neue Anfrage über „{{ page.title }}“',
 	'formwizard.confirm.subject.placeholder' => 'Ihre Nachricht an {{ site.title }}',
+	/* -------------- Uploads --------------*/
+	'formwizard.uploads' => 'Hochgeladene Dateien',
+	'formwizard.uploads.mode' => 'Dateien aus Upload-Feldern',
+	'formwizard.uploads.store' => 'Beim Eingang ablegen',
+	'formwizard.uploads.attach' => 'Nur an die Mail hängen',
+	'formwizard.uploads.both' => 'Beides',
+	'formwizard.uploads.help' => 'Ablegen: geschützt beim Eingang, nur über das Panel zu öffnen, mit dem Eingang gelöscht; die Mail enthält einen Link. Nur Mail: die Datei geht als Anhang mit und wird danach gelöscht – große Dateien können am Mailserver scheitern. Speichert das Formular keine Eingänge, gehen Dateien immer nur als Anhang.',
+	'formwizard.log.attachments' => '{count} Anhang/Anhänge',
 ];

@@ -235,4 +235,12 @@
 	// (placeholders in the Panel: Kirby fills them – the form is the page)
 	'formwizard.team.subject.placeholder' => 'New request via “{{ page.title }}”',
 	'formwizard.confirm.subject.placeholder' => 'Your message to {{ site.title }}',
+	/* -------------- Uploads --------------*/
+	'formwizard.uploads' => 'Uploaded files',
+	'formwizard.uploads.mode' => 'Files of upload fields',
+	'formwizard.uploads.store' => 'Keep with the submission',
+	'formwizard.uploads.attach' => 'Only attach to the mail',
+	'formwizard.uploads.both' => 'Both',
+	'formwizard.uploads.help' => 'Keep: protected with the submission, opened through the Panel only, deleted with it; the mail has a link. Mail only: the file goes as an attachment and is deleted afterwards – large files may fail at the mail server. If the form stores no submissions, files only go as attachments.',
+	'formwizard.log.attachments' => '{count} attachment(s)',
 ];

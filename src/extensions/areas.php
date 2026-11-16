@@ -90,8 +90,22 @@ return [
 				},
 			],
 		],
-		// the CSV file of what is filtered (a link the browser downloads)
+		// the CSV file of what is filtered (a link the browser downloads);
+		// an uploaded file of a submission (only through the Panel)
 		'requests' => [
+			'formwizard/submissions/file' => [
+				'pattern' => 'formwizard/submissions/(:any)/files/(:any)',
+				'action'  => function (string $id, string $name) {
+					$record = fwSubmissions::find($id);
+					$name   = rawurldecode($name);
+					foreach ($record['files'] ?? [] as $file) {
+						if ($file['name'] !== $name) continue;
+						$path = fwSubmissions::root() . '/' . $record['formId'] . '/' . $id . '/' . $file['name'];
+						if (is_file($path)) return Response::download($path, $file['name']);
+					}
+					return new Response('Not found', 'text/plain', 404);
+				},
+			],
 			'formwizard/submissions.csv' => [
 				'pattern' => 'formwizard/submissions.csv',
 				'action'  => function () {

@@ -232,6 +232,24 @@ return array_merge([
 						'when'        => ['confirm' => true],
 					],
 
+					// uploaded files
+					'headlineUploads' => [
+						'label' => 'formwizard.uploads',
+						'type'  => 'headline',
+					],
+					'uploads' => [
+						'label'     => 'formwizard.uploads.mode',
+						'type'      => 'toggles',
+						'default'   => 'store',
+						'translate' => false,
+						'help'      => 'formwizard.uploads.help',
+						'options'   => [
+							['value' => 'store', 'text' => ['*' => 'formwizard.uploads.store']],
+							['value' => 'attach', 'text' => ['*' => 'formwizard.uploads.attach']],
+							['value' => 'both', 'text' => ['*' => 'formwizard.uploads.both']],
+						],
+					],
+
 					// a webhook (CRM, Zapier, n8n …)
 					'headlineWebhook' => [
 						'label' => 'formwizard.webhook',

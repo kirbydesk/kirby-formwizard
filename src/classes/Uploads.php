@@ -72,4 +72,81 @@ class fwUploads
 		$mb = round(self::maxBytes($content) / 1024 / 1024, 1);
 		return implode(', ', array_unique($ext)) . ' · ' . tt('formwizard.upload.max', null, ['size' => str_replace('.0', '', (string) $mb) . ' MB']);
 	}
+
+	/* -------------- Keeping and attaching --------------*/
+
+	/** What happens to the files of a form: store (with the submission), attach (to the team's mail), both */
+	public static function mode(\Kirby\Cms\Page $form, bool $stored): string
+	{
+		$mode = (string) $form->content()->get('uploads')->value();
+		$mode = in_array($mode, ['store', 'attach', 'both'], true) ? $mode : 'store';
+		// (nothing stored: the files only go with the mail – else they'd be lost)
+		return $stored ? $mode : 'attach';
+	}
+
+	/** A safe file name: letters, digits, dashes – the extension kept (lowercase) */
+	public static function safeName(string $name): string
+	{
+		$ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+		$base = \Kirby\Toolkit\Str::slug(pathinfo($name, PATHINFO_FILENAME)) ?: 'file';
+		return substr($base, 0, 80) . ($ext !== '' && preg_match('/^[a-z0-9]{1,8}$/', $ext) ? '.' . $ext : '');
+	}
+
+	/**
+	 * The uploads of a submission put in place: stored in its folder
+	 * (content/.formwizard/submissions/<form>/<id>/) or in the temp folder
+	 * for the mail only. Returns the entries: field, name, file, size, type,
+	 * stored, path (for the mail; dropped before the submission is written).
+	 */
+	public static function keep(\Kirby\Cms\Page $form, array $submission, array $uploads): array
+	{
+		$stored = ($submission['stored'] ?? true) && in_array(self::mode($form, $submission['stored'] ?? true), ['store', 'both'], true);
+		$dir    = $stored
+			? fwSubmissions::root() . '/' . $submission['formId'] . '/' . $submission['id']
+			: (kirby()->root('cache') ?? sys_get_temp_dir()) . '/formwizard-' . $submission['id'];
+		$entries = [];
+		$names   = [];
+		foreach ($uploads as $key => $files) {
+			foreach ($files as $file) {
+				$name = self::safeName($file['name']);
+				for ($n = 2; isset($names[$name]); $n++) $name = pathinfo(self::safeName($file['name']), PATHINFO_FILENAME) . '-' . $n . '.' . pathinfo($name, PATHINFO_EXTENSION);
+				$names[$name] = true;
+				\Kirby\Filesystem\Dir::make($dir);
+				$path = $dir . '/' . $name;
+				if (!move_uploaded_file($file['tmp_name'], $path) && !(is_file($file['tmp_name']) && rename($file['tmp_name'], $path))) continue;
+				$entries[] = [
+					'field'  => $key,
+					'name'   => $name,
+					'size'   => filesize($path),
+					'type'   => (new \finfo(FILEINFO_MIME_TYPE))->file($path),
+					'stored' => $stored,
+					'path'   => $path,
+				];
+			}
+		}
+		return $entries;
+	}
+
+	/** After the mails: the files not stored removed, the paths dropped from the entries */
+	public static function finish(array $entries): array
+	{
+		$dirs = [];
+		foreach ($entries as $i => $entry) {
+			if (!$entry['stored']) {
+				@unlink($entry['path']);
+				$dirs[dirname($entry['path'])] = true;
+				unset($entries[$i]);
+				continue;
+			}
+			unset($entries[$i]['path']);
+		}
+		foreach (array_keys($dirs) as $dir) @rmdir($dir);
+		return array_values($entries);
+	}
+
+	/** "412 KB", "1.2 MB" */
+	public static function size(int $bytes): string
+	{
+		return $bytes >= 1024 * 1024 ? round($bytes / 1024 / 1024, 1) . ' MB' : max(1, round($bytes / 1024)) . ' KB';
+	}
 }
