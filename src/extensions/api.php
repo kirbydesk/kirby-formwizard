@@ -35,7 +35,8 @@ return [
 			'method'  => 'POST',
 			'action'  => function () {
 				fwEditor::guard();
-				return ['slug' => fwEditor::create((string) kirby()->request()->get('title'))];
+				$request = kirby()->request();
+				return ['slug' => fwEditor::create((string) $request->get('title'), (string) $request->get('template', ''))];
 			},
 		],
 		[

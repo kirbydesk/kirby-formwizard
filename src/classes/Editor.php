@@ -88,7 +88,7 @@ class fwEditor
 	}
 
 	/** A new form (a draft) – its slug */
-	public static function create(string $title): string
+	public static function create(string $title, string $template = ''): string
 	{
 		$title = trim($title);
 		if ($title === '') throw new \Kirby\Exception\InvalidArgumentException(message: t('formwizard.form.name.missing'));
@@ -101,7 +101,7 @@ class fwEditor
 			'slug'     => $slug,
 			'template' => 'formwizard-form',
 			'draft'    => true,
-			'content'  => ['title' => $title],
+			'content'  => array_merge(fwTemplates::content($template), ['title' => $title]),
 		]);
 		return $slug;
 	}

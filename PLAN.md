@@ -84,7 +84,7 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
    - Seite „Formulare“ im Zahnrad-Menü (Spamschutz, Aufbewahrung)
    - Gestaltung und Vorschau unter Blöcke › Formular
    - Löschfrist automatisch beim Aufruf des Panels
-11. **Feinschliff:**
+11. ✅ **Feinschliff** (dazu: Sprachwahl im Formular-Editor):
     - Vorlagen für neue Formulare (Kontakt, Rückruf, Bewerbung, Anmeldung)
     - Formular schließen
     - Test mit Translate Wizard

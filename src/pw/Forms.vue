@@ -36,7 +36,7 @@
 
 		<!-- a new form: its name -->
 		<section v-else-if="mode === 'new'" class="fw-pw-new">
-			<k-form :fields="newFields" :value="{ title: newTitle }" @input="newTitle = $event.title" @submit="create" />
+			<k-form :fields="newFields" :value="{ title: newTitle, template: newTemplate }" @input="newTitle = $event.title; newTemplate = $event.template" @submit="create" />
 			<div class="fw-pw-buttons">
 				<k-button variant="filled" size="sm" :text="$t('cancel')" @click="$emit('navigate', 'list')" />
 				<k-button variant="filled" size="sm" theme="positive" icon="check" :text="$t('formwizard.form.create')" :disabled="!newTitle.trim() || busy" @click="create" />
@@ -54,6 +54,10 @@
 						</button>
 					</nav>
 					<div class="fw-pw-actions">
+						<!-- the language edited (multilingual sites) -->
+						<span v-if="languages.length > 1" class="fw-pw-langs" role="group">
+							<button v-for="l in languages" :key="l.code" type="button" :aria-pressed="lang === l.code ? 'true' : 'false'" :title="l.name" @click="switchLanguage(l.code)">{{ l.code.toUpperCase() }}</button>
+						</span>
 						<k-button
 							:icon="form.status === 'listed' ? 'status-listed' : 'status-draft'"
 							variant="filled"
@@ -113,11 +117,16 @@ export default {
 			dirty: false,
 			busy: false,
 			newTitle: '',
+			newTemplate: 'contact',
+			lang: null,
 			settings: null,
 			settingsDirty: false
 		};
 	},
 	computed: {
+		languages() {
+			return this.$panel.languages || [];
+		},
 		mode() {
 			if (!this.view || this.view === 'list') return 'list';
 			if (this.view.startsWith('form:')) return 'form';
@@ -146,7 +155,16 @@ export default {
 			return this.values.title || (this.form ? this.form.title : '');
 		},
 		newFields() {
-			return { title: { name: 'title', type: 'text', label: this.$t('formwizard.form.name'), required: true, autofocus: true } };
+			return {
+				title: { name: 'title', type: 'text', label: this.$t('formwizard.form.name'), required: true, autofocus: true },
+				template: {
+					name: 'template',
+					type: 'radio',
+					label: this.$t('formwizard.tpl'),
+					help: this.$t('formwizard.tpl.help'),
+					options: ['contact', 'callback', 'application', 'registration', ''].map((t) => ({ value: t, text: this.$t('formwizard.tpl.' + (t || 'empty')), info: t ? this.$t('formwizard.tpl.' + t + '.info') : null }))
+				}
+			};
 		},
 		settingsFields() {
 			const secretHelp = {
@@ -197,7 +215,14 @@ export default {
 	watch: {
 		view: {
 			immediate: true,
-			handler() {
+			handler(view, old) {
+				// (back to the form after "keep editing": nothing to load)
+				if (this._restoring) {
+					this._restoring = false;
+					return;
+				}
+				// unsaved changes: asked first – keep editing goes back
+				if (this.dirty && old !== undefined) return this.confirmLeave(old);
 				this.load();
 			}
 		}
@@ -212,8 +237,47 @@ export default {
 		window.removeEventListener('beforeunload', this._unload);
 	},
 	methods: {
+		confirmLeave(old) {
+			let decided = false;
+			const stay = () => {
+				if (decided) return;
+				decided = true;
+				this._restoring = true;
+				this.$emit('navigate', old);
+			};
+			this.$panel.dialog.open(
+				{
+					component: 'k-text-dialog',
+					props: {
+						text: this.$t('formwizard.unsaved'),
+						submitButton: { text: this.$t('discard'), icon: 'undo', theme: 'notice' },
+						cancelButton: this.$t('formwizard.unsaved.stay')
+					}
+				},
+				{
+					on: {
+						submit: () => {
+							decided = true;
+							this.$panel.dialog.close();
+							this.dirty = false;
+							this.load();
+						},
+						cancel: stay,
+						close: stay
+					}
+				}
+			);
+		},
 		language() {
-			return this.$panel.language?.code || null;
+			return this.lang || this.$panel.language?.code || null;
+		},
+		// another language of the form: asked first with unsaved changes
+		async switchLanguage(code) {
+			if (code === this.language()) return;
+			if (this.dirty && !window.confirm(this.$t('formwizard.unsaved'))) return;
+			this.lang = code;
+			this.dirty = false;
+			this.take(await this.$api.get('formwizard/pw/forms/' + this.slug, { language: code }));
 		},
 		async load() {
 			this.$emit('preview', this.mode === 'form');
@@ -224,6 +288,7 @@ export default {
 			} else if (this.mode === 'new') {
 				this.$emit('title', { text: this.$t('formwizard.form.new'), icon: 'add' });
 				this.newTitle = '';
+				this.newTemplate = 'contact';
 			} else if (this.mode === 'settings') {
 				this.$emit('title', { text: this.$t('formwizard.settings.title'), icon: 'settings' });
 				this.settings = await this.$api.get('formwizard/pw/settings');
@@ -271,7 +336,7 @@ export default {
 			if (!this.newTitle.trim() || this.busy) return;
 			this.busy = true;
 			try {
-				const { slug } = await this.$api.post('formwizard/pw/forms', { title: this.newTitle });
+				const { slug } = await this.$api.post('formwizard/pw/forms', { title: this.newTitle, template: this.newTemplate });
 				this.$emit('changed');
 				this.$emit('navigate', 'form:' + slug);
 			} finally {
@@ -353,6 +418,23 @@ export default {
 	display: flex;
 	gap: var(--spacing-2);
 	padding-bottom: var(--spacing-2);
+}
+.fw-pw-langs {
+	display: inline-flex;
+	border-radius: var(--rounded);
+	overflow: hidden;
+	box-shadow: var(--shadow);
+}
+.fw-pw-langs button {
+	padding: 0 var(--spacing-2);
+	height: var(--height-sm, 1.75rem);
+	font-size: var(--text-xs);
+	font-family: var(--font-mono);
+	background: var(--color-white);
+}
+.fw-pw-langs button[aria-pressed="true"] {
+	background: var(--color-black);
+	color: var(--color-white);
 }
 .fw-pw-buttons {
 	display: flex;
