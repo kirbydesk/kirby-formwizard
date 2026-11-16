@@ -6,14 +6,16 @@ Form builder for Kirby projects with the Pagewizard and the Project Wizard: buil
 
 ## What works so far
 
-- **Panel menu „Form Wizard“** with „Formulare“ and „Eingänge“ below it (shown while you're in the Form Wizard).
-- **Formulare:** a hidden page `forms` holds them; it is created on the first visit of the Panel. Each form is a page of its own with the tabs *Felder*, *Nach dem Absenden* and *Einstellungen*. Draft: not offered in the block yet; Aktiv: offered.
+- **Project Wizard › Formulare** (a tab of its own between „Blöcke“ and „Einstellungen“): the dropdown lists the forms, „Neues Formular“, „Alle Formulare“, „Eingänge“ and „Einstellungen“. A form opens like a block there: its tabs *Felder*, *Nach dem Absenden*, *Einstellungen* (with the form's name), its status (Entwurf/Aktiv), its submissions, „Löschen“ – and a preview in the right column.
+- **Kirby menu:** only „Eingänge“ (with the count of new ones) – for everyone who reads submissions, also without access to the Project Wizard.
+- **Forms are pages** below a hidden page `forms` (created on the first visit of the Panel), but they are edited in the Project Wizard only; an old link to the page goes there.
 - **13 field types** as blocks: Text, E-Mail, Telefon, Zahl, Datum, mehrzeiliger Text, Auswahlliste, eine Option, mehrere Optionen, Datei-Upload, verstecktes Feld, Zwischentitel/Hinweis, Zustimmung – each with label, key, required, width and „Nur zeigen, wenn“.
-- The URLs of the forms answer with the error page (404).
-- **Block „Formular“** (`pwform`, activate it in the Project Wizard): tagline, heading, text, layout and style as the other blocks, plus the form (active forms only) and an own thank-you text. In the Panel it shows the form's fields.
-- **On the website:** all field types, „Nur zeigen, wenn“ live (without JavaScript the fields stay visible), checked on the server after sending (required, e-mail, phone, number range, length, date, options, files), errors at the fields, the values kept; then the thank-you text (`{{ key }}` replaced) or the page of thanks. Invisible spam protection (a trap field, at least 3 seconds).
-- **Eingänge:** each submission stored as JSON in `content/.formwizard/submissions/<form>/` (unless the form says „Nur versenden“). *Form Wizard › Eingänge*: all forms in one list, filter by form and status, search, 30 a page, CSV export (Excel-ready); one submission with its fields, „Erledigt“/„Wieder als neu“, „Antworten“ (mailto), „Löschen“. The count of new ones in the menu and on the form's button „Eingänge (n)“. Deleted after 180 days (option `retention`).
-- **Not yet:** no mails – that comes with steps 6 and 7.
+- **Block „Formular“** (`pwform`, activate it in the Project Wizard): tagline, heading, text, layout and style as the other blocks, plus the form (active forms only) and an own thank-you text. In the Panel it shows the form's fields; „Formular bearbeiten →“ leads to the Project Wizard.
+- **On the website:** all field types, „Nur zeigen, wenn“ live (without JavaScript the fields stay visible), checked on the server after sending, errors at the fields, the values kept; then the thank-you text or the page of thanks. Invisible spam protection (a trap field, at least 3 seconds). The URLs of the forms answer 404.
+- **Eingänge:** stored as JSON in `content/.formwizard/submissions/<form>/` (unless the form says „Nur versenden“): list over all forms, filter by form and status, search, CSV export; one submission with „Erledigt“, „Antworten“, „Löschen“. Deleted after the period set in *Formulare › Einstellungen* (default 180 days).
+- **Not yet:** no mails – that comes with step 7.
+
+**Needs** kirby-projectwizard with the plugin tabs and the mail server (branch `claude/loving-fermi-q6ap63`).
 
 ## Styling
 
@@ -25,8 +27,7 @@ CSS variables `--pwform-*` per colour variant (field background, border, text, f
 // site/config/config.php
 'kirbydesk.kirby-formwizard' => [
 	'slug'      => 'forms', // the page holding the forms
-	'retention' => 180,     // days a submission is kept (0: for ever)
+	'retention' => 180,     // days a submission is kept until set in the Project Wizard (0: for ever)
 ],
 ```
 
-The page `forms` also shows up in the Panel's page list of the site. To hide it there, leave the template `formwizard-forms` out of the site blueprint's pages section.

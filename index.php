@@ -17,6 +17,7 @@ require_once __DIR__ . '/src/classes/Render.php';
 require_once __DIR__ . '/src/classes/Submit.php';
 require_once __DIR__ . '/src/classes/Submissions.php';
 require_once __DIR__ . '/src/classes/SubmissionsView.php';
+require_once __DIR__ . '/src/classes/Editor.php';
 require_once __DIR__ . '/src/classes/FormPage.php';
 
 // the block: a form on a page
@@ -30,6 +31,15 @@ Kirby::plugin('kirbydesk/kirby-formwizard', [
 		'retention' => 180,
 		// (the counts of the submissions)
 		'cache' => true,
+		// the tab "Forms" in the Project Wizard's header (the forms are built there)
+		'projectwizard' => fn () => [
+			'key'       => 'forms',
+			'label'     => t('formwizard.forms', 'Forms'),
+			'icon'      => 'formwizard',
+			'component' => 'k-formwizard-pw',
+			'menu'      => 'formwizard/pw/menu',
+			'badge'     => fwSubmissions::countNew(),
+		],
 	],
 
 	/* -------------- Extensions --------------*/

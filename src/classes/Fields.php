@@ -45,13 +45,14 @@ class fwFields
 			'label'    => $type === 'fwinfo' ? 'formwizard.field.title' : 'formwizard.field.label',
 			'type'     => 'text',
 			'required' => true,
+			// (a new field: the name of its type, so the form can be published at once)
+			'default'  => t('formwizard.type.' . $type),
 			'width'    => $type === 'fwinfo' ? '1/1' : '1/2',
 		];
 		if ($type !== 'fwinfo') {
 			$fields['key'] = [
 				'label'     => 'formwizard.field.key',
 				'type'      => 'slug',
-				'sync'      => 'label',
 				'translate' => false,
 				'width'     => '1/2',
 				'help'      => 'formwizard.field.key.help',
@@ -254,7 +255,6 @@ class fwFields
 				'value' => [
 					'label'     => 'formwizard.field.option.value',
 					'type'      => 'slug',
-					'sync'      => 'text',
 					'translate' => false,
 					'help'      => 'formwizard.field.option.value.help',
 				],

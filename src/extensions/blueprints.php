@@ -87,8 +87,6 @@ return array_merge([
 			'move'           => false,
 			'preview'        => false,
 		],
-		// (no page of the website: no "open"; its submissions instead)
-		'buttons' => ['formwizard-submissions', 'settings', 'languages', 'status'],
 		'create'  => [
 			'title'  => ['label' => 'formwizard.form.name'],
 			'status' => 'draft',

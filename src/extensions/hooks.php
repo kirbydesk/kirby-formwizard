@@ -8,4 +8,12 @@ return [
 		if ($path !== $slug && !str_starts_with((string) $path, $slug . '/')) return;
 		if (kirby()->user()) fwForms::ensureContainer();
 	},
+
+	// the forms are edited in the Project Wizard, not as pages: a form opened
+	// in the page view (an old link, the search) goes there
+	'panel.route:before' => function ($route, $path) {
+		$slug = fwForms::formOfPanelPath((string) $path);
+		if ($slug === null) return;
+		\Kirby\Panel\Panel::go('projectwizard?tab=forms&view=' . ($slug === '' ? 'list' : 'form:' . rawurlencode($slug)));
+	},
 ];

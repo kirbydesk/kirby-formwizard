@@ -210,10 +210,11 @@ class fwSubmissions
 
 	/* -------------- Retention --------------*/
 
-	/** Days a submission is kept (option "retention", 0: for ever) */
+	/** Days a submission is kept (0: for ever) */
 	public static function retention(): int
 	{
-		return max(0, (int) option('kirbydesk.kirby-formwizard.retention', 180));
+		// (Project Wizard › Forms › Settings, else the option)
+		return max(0, fwEditor::settings()['retention']);
 	}
 
 	/** Submissions older than the retention period deleted – at most once a day */

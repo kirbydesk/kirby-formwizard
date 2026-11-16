@@ -44,7 +44,7 @@ Die Liste unter „Eingänge“ ist eine eigene Panel-Ansicht (Vue).
 - **Speicherort:** `content/.projectwizard/mail.json`, Schlüssel in `site/config/mail.key`.
 - **Kontaktformular:** bleibt unverändert mit seinem eigenen Versand. Es wird nichts daraus übernommen.
 
-## Umbau: Formulare in den Project Wizard
+## ✅ Umbau: Formulare in den Project Wizard
 
 Schritt 2 hat die Formulare als Seiten unter einem eigenen Menüpunkt „Form Wizard“ gebaut. Das wird umgebaut:
 - **Speicher bleibt:** Formulare bleiben Seiten (Übersetzung, Entwürfe, Sperren), Felder bleiben Blocks. Sie erscheinen aber nicht mehr als Seiten im Panel.

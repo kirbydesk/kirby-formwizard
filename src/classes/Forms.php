@@ -94,31 +94,21 @@ class fwForms
 		return self::container()?->childrenAndDrafts()->filterBy('intendedTemplate', 'formwizard-form') ?? new Pages([]);
 	}
 
-	/* -------------- The Panel menu --------------*/
+	/* -------------- The Panel --------------*/
 
-	/** The path in the Panel without its slug, e.g. "pages/forms+contact" */
-	public static function panelPath(): string
+	/** The Project Wizard's page of a form (its tab "Forms") */
+	public static function editUrl(Page $form): string
 	{
-		$slug = trim((string) option('panel.slug', 'panel'), '/');
-		$path = trim(kirby()->request()->path()->toString(), '/');
-		return str_starts_with($path . '/', $slug . '/') ? substr($path, strlen($slug) + 1) : '';
+		return 'projectwizard?tab=forms&view=form:' . rawurlencode($form->slug());
 	}
 
-	/** In the Panel at the forms: the container, a form or a part of it (files, a block …) */
-	public static function inFormsView(): bool
+	/**
+	 * A form opened as a page in the Panel (an old link, the search …):
+	 * the slug of the form, '' for the container – null for any other page
+	 */
+	public static function formOfPanelPath(string $path): ?string
 	{
-		return (bool) preg_match('#^pages/' . preg_quote(self::slug(), '#') . '(\+|/|$)#', self::panelPath());
-	}
-
-	/** Anywhere in the Form Wizard: its menu entries are open there */
-	public static function inArea(?string $current): bool
-	{
-		return in_array($current, ['formwizard', 'formwizard-forms', 'formwizard-submissions'], true) || self::inFormsView();
-	}
-
-	/** The Panel link to the forms */
-	public static function panelUrl(): string
-	{
-		return 'pages/' . self::slug();
+		if (!preg_match('#^pages/' . preg_quote(self::slug(), '#') . '(?:\+([^/+]+))?(?:/|$)#', $path, $m)) return null;
+		return $m[1] ?? '';
 	}
 }
