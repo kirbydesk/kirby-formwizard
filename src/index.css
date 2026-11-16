@@ -1,0 +1,6 @@
+/* The Panel menu: "Forms" and "Submissions" indented below "Form Wizard"
+   (only with the menu open – closed, it shows the icons alone) */
+.k-panel[data-menu="true"] .k-panel-menu-button:is([href$="/formwizard/forms"], [href$="/formwizard/submissions"]) {
+	padding-inline-start: calc(7px + var(--spacing-5));
+	font-size: var(--text-sm);
+}

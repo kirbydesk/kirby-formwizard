@@ -1,0 +1,28 @@
+{
+	"name": "kirbydesk/kirby-formwizard",
+	"version": "0.1.0",
+	"description": "Form builder for Kirby CMS",
+	"type": "kirby-plugin",
+	"keywords": [
+		"kirby",
+		"kirby-plugin",
+		"formwizard"
+	],
+	"license": "proprietary",
+	"homepage": "https://github.com/kirbydesk/kirby-formwizard",
+	"authors": [
+		{
+			"name": "Christian Fickinger",
+			"email": "hello@kirbydesk.com",
+			"homepage": "https://kirbydesk.com"
+		}
+	],
+	"extra": {
+		"installer-name": "kirby-formwizard"
+	},
+	"require": {
+		"getkirby/composer-installer": "^1.2",
+		"kirbydesk/kirby-pagewizard": "^1.5.1",
+		"kirbydesk/kirby-projectwizard": "^1.7.0"
+	}
+}

@@ -21,9 +21,9 @@ Vorbild für die Ideen: [Kirby DreamForm](https://github.com/tobimori/kirby-drea
 | Panel | Ein Menüpunkt „Form Wizard“ mit den Unterpunkten „Formulare“ und „Eingänge“ |
 | Project Wizard | Gestaltung unter Blöcke › Formular. Spamschutz und Aufbewahrung als eigene Seite im Zahnrad-Menü, wie „Übersetzung“ beim Translate Wizard |
 | Mailserver (SMTP) | Wird im Project Wizard angelegt, als allgemeine Projekt-Einstellung für alle Plugins, die Mails verschicken (Form Wizard, Kontaktformular) |
-| Ein Repo | `kirby-formwizard` bringt alles mit, auch den Block. Dafür muss `ProjectConfig::detectBlocks()` auch Blöcke außerhalb von `kirbyblock-*` finden |
+| Ein Repo | `kirby-formwizard` bringt alles mit, auch den Block. `ProjectConfig::detectBlocks()` findet Blöcke schon heute über `pwConfig::register()`, egal wie der Ordner heißt |
 
-## Vorschlag zur Technik (noch zu bestätigen)
+## Technik
 
 **Formulare sind Kirby-Seiten.** Sie liegen in einem versteckten Container (`content/forms/`, Vorlage `formwizard-forms`), jedes Formular ist eine Unterseite (`formwizard-form`). Die Felder sind ein Blocks-Feld, und jeder Feldtyp ist ein Block (`fwtext`, `fwemail`, …). Das bringt aus Kirby mit, ohne dass wir es selbst bauen:
 - Sortieren per Ziehen, Feldtyp-Auswahl, Bearbeiten im Drawer, Kopieren und Einfügen
@@ -49,15 +49,14 @@ Die Liste unter „Eingänge“ ist eine eigene Panel-Ansicht (Vue).
 
 Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobieren lässt.
 
-1. **Grundgerüst:** `composer.json`, `index.php`, kirbyup, Übersetzungen de/en, `CLAUDE.md`, README.
-2. **Formulare bauen:**
+1. ✅ **Grundgerüst:** `composer.json`, `index.php`, kirbyup, Übersetzungen de/en, `CLAUDE.md`, README.
+2. ✅ **Formulare bauen** (Eingänge und Verwendung in der Übersicht folgen mit Schritt 3 und 5):
    - Container und Formular-Seiten mit Blueprints, die 13 Feldtypen als Blocks
    - Menüpunkt „Form Wizard › Formulare“
    - Die Übersicht mit Feldern, Eingängen und Verwendung
 3. **Formular auf der Website:**
    - Block `pwform` mit Tagline, Überschrift, Text, Layout und Stil wie die anderen Blöcke, dazu die Auswahl des Formulars
    - Das Snippet zeigt alle Feldtypen; Bedingungen funktionieren auch ohne JavaScript serverseitig, mit JavaScript live
-   - `detectBlocks()` im Project Wizard erweitern
 4. **Absenden:**
    - Route, Prüfung auf dem Server, Weiterleitung nach dem Absenden (wie beim Kontaktformular, ohne JavaScript nutzbar)
    - Fehler am Feld, Danke-Text oder Weiterleitung
@@ -84,8 +83,6 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
     - Test mit Translate Wizard
     - README
 
-## Offen
+## Testen
 
-- Technik oben bestätigen: Formulare als Seiten mit Feldern als Blocks, Eingänge als JSON.
-- Block-Erkennung im Project Wizard: Wie soll der Form Wizard sich melden? Vorschlag: Jedes Plugin, das `pwConfig::register()` aufruft, zählt als Block-Plugin, unabhängig vom Ordnernamen.
-- Ein Testprojekt: In dieser Umgebung gibt es keine Kirby-Installation. Ich kann eine frische per Composer aufsetzen und die Plugins verlinken.
+- Getestet wird an einem echten Projekt.
