@@ -19,6 +19,8 @@ require_once __DIR__ . '/src/classes/Submissions.php';
 require_once __DIR__ . '/src/classes/SubmissionsView.php';
 require_once __DIR__ . '/src/classes/Editor.php';
 require_once __DIR__ . '/src/classes/Actions.php';
+require_once __DIR__ . '/src/classes/Settings.php';
+require_once __DIR__ . '/src/classes/Captcha.php';
 require_once __DIR__ . '/src/classes/FormPage.php';
 
 // the block: a form on a page

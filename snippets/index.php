@@ -51,6 +51,8 @@ elseif ($status === 'closed' || $form->content()->get('closed')->toBool()):
 else:
 	if ($status === 'failed'):
 		echo '<div data-formwizard-message="failed" role="alert">' . kirbytext(esc(t('formwizard.failed'))) . '</div>' . "\n";
+	elseif ($status === 'limited'):
+		echo '<div data-formwizard-message="failed" role="alert">' . esc(t('formwizard.limited')) . '</div>' . "\n";
 	elseif ($status === 'invalid'):
 		echo '<div data-formwizard-message="invalid" role="alert">' . esc(t('formwizard.invalid')) . '</div>' . "\n";
 	endif;

@@ -24,7 +24,7 @@ class fwEditor
 			'headlineuploads', 'uploads',
 			'headlinewebhook', 'webhook', 'webhookurl',
 		],
-		'settings' => ['buttontext', 'privacypage', 'store', 'closed', 'closedtext'],
+		'settings' => ['buttontext', 'privacypage', 'store', 'captcha', 'closed', 'closedtext'],
 	];
 
 	/** May the user edit forms? (who may open the Project Wizard) */
@@ -201,31 +201,4 @@ class fwEditor
 		self::form($slug)->delete(true);
 	}
 
-	/* -------------- Settings for all forms --------------*/
-
-	public static function settingsFile(): string
-	{
-		return pwConfig::projectDir() . '/formwizard.json';
-	}
-
-	public static function settings(): array
-	{
-		$file = self::settingsFile();
-		$data = is_file($file) ? json_decode((string) file_get_contents($file), true) : null;
-		return [
-			'retention' => is_array($data) && isset($data['retention']) ? (int) $data['retention'] : (int) option('kirbydesk.kirby-formwizard.retention', 180),
-		];
-	}
-
-	public static function saveSettings(array $changes): array
-	{
-		$settings = self::settings();
-		if (isset($changes['retention']) && is_numeric($changes['retention'])) {
-			$settings['retention'] = max(0, min(3650, (int) $changes['retention']));
-		}
-		$file = self::settingsFile();
-		if (!is_dir(dirname($file))) mkdir(dirname($file), 0755, true);
-		file_put_contents($file, json_encode($settings, JSON_PRETTY_PRINT));
-		return $settings;
-	}
 }

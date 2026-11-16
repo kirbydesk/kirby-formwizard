@@ -191,7 +191,6 @@
 	'formwizard.settings.retention.help' => 'Mit den hochgeladenen Dateien. Für die Datenschutzerklärung: diese Frist nennen.',
 	'formwizard.settings.retention.days' => '{days} Tagen',
 	'formwizard.settings.retention.never' => 'Nie',
-	'formwizard.settings.spam' => 'Spamschutz: ein verstecktes Feld und mindestens 3 Sekunden zwischen Laden und Absenden – unsichtbar, immer an. Captcha und Begrenzung der Sendungen folgen.',
 	'formwizard.preview.website' => 'Vorschau auf der Website',
 
 	/* -------------- After sending: mails, webhook, log --------------*/
@@ -243,4 +242,24 @@
 	'formwizard.uploads.both' => 'Beides',
 	'formwizard.uploads.help' => 'Ablegen: geschützt beim Eingang, nur über das Panel zu öffnen, mit dem Eingang gelöscht; die Mail enthält einen Link. Nur Mail: die Datei geht als Anhang mit und wird danach gelöscht – große Dateien können am Mailserver scheitern. Speichert das Formular keine Eingänge, gehen Dateien immer nur als Anhang.',
 	'formwizard.log.attachments' => '{count} Anhang/Anhänge',
+	/* -------------- Captcha, limit --------------*/
+	'formwizard.limited' => 'Zu viele Anfragen in kurzer Zeit. Bitte in ein paar Minuten noch einmal versuchen.',
+	'formwizard.error.captcha' => 'Bitte bestätigen, dass Sie kein Roboter sind.',
+	'formwizard.captcha.form' => 'Captcha',
+	'formwizard.captcha.form.help' => 'Wenn unter Formulare › Einstellungen ein Captcha eingerichtet ist. Aus: dieses Formular ohne.',
+	'formwizard.spam' => 'Spamschutz',
+	'formwizard.spam.always' => 'Immer an, unsichtbar: ein verstecktes Feld, das nur Bots ausfüllen, und mindestens 3 Sekunden zwischen Laden und Absenden.',
+	'formwizard.captcha' => 'Captcha',
+	'formwizard.captcha.none' => 'Keins',
+	'formwizard.captcha.help' => 'Friendly Captcha: aus der EU, ohne Cookies. Turnstile: kostenlos, Daten an Cloudflare. hCaptcha: zeigt manchmal ein Rätsel. Lädt ein Skript des Anbieters – in der Datenschutzerklärung nennen. Gilt für alle Formulare; ein Formular kann es abschalten.',
+	'formwizard.captcha.sitekey' => 'Website-Schlüssel (sitekey)',
+	'formwizard.captcha.secret' => 'Geheimer Schlüssel',
+	'formwizard.captcha.secret.stored' => 'Verschlüsselt gespeichert – nur eintragen, um ihn zu ändern.',
+	'formwizard.captcha.secret.unreadable' => 'Nicht lesbar (Schlüsseldatei fehlt) – bitte neu eintragen.',
+	'formwizard.captcha.secret.none' => 'Wird verschlüsselt gespeichert (site/config/formwizard.key). Ohne ihn bleibt das Captcha aus.',
+	'formwizard.rate' => 'Sendungen begrenzen',
+	'formwizard.rate.limit' => 'Höchstens',
+	'formwizard.rate.minutes' => 'je',
+	'formwizard.rate.minutes.unit' => 'Minuten',
+	'formwizard.rate.help' => 'Je Besucher, gezählt über einen Hash der IP-Adresse – die Adresse selbst wird nicht gespeichert und nach der Zeit vergessen.',
 ];

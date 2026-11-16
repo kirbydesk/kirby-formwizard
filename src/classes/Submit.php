@@ -58,6 +58,11 @@ class fwSubmit
 		$back = array_filter($values, fn ($k) => ($fields[$k]['type'] ?? '') !== 'fwhidden', ARRAY_FILTER_USE_KEY);
 		if ($errors !== []) return ['status' => 'invalid', 'errors' => $errors, 'values' => $back];
 
+		// the captcha (once the fields are fine: its answer counts once), the limit
+		if ($error = fwCaptcha::verify($form, $data)) return ['status' => 'invalid', 'errors' => ['captcha' => $error], 'values' => $back];
+		if (!fwCaptcha::allowed()) return ['status' => 'limited', 'values' => $back];
+		fwCaptcha::count();
+
 		// the uploads of the fields shown: their names as the field's value
 		$uploads = [];
 		foreach ($shown as $key => $field) {

@@ -214,7 +214,7 @@ class fwSubmissions
 	public static function retention(): int
 	{
 		// (Project Wizard › Forms › Settings, else the option)
-		return max(0, fwEditor::settings()['retention']);
+		return fwSettings::get()['retention'];
 	}
 
 	/** Submissions older than the retention period deleted – at most once a day */

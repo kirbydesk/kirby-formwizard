@@ -191,7 +191,6 @@
 	'formwizard.settings.retention.help' => 'With the uploaded files. For the privacy policy: name this period.',
 	'formwizard.settings.retention.days' => '{days} days',
 	'formwizard.settings.retention.never' => 'Never',
-	'formwizard.settings.spam' => 'Spam protection: a hidden field and at least 3 seconds between loading and sending – invisible, always on. A captcha and a limit of submissions follow.',
 	'formwizard.preview.website' => 'Preview on the website',
 
 	/* -------------- After sending: mails, webhook, log --------------*/
@@ -243,4 +242,24 @@
 	'formwizard.uploads.both' => 'Both',
 	'formwizard.uploads.help' => 'Keep: protected with the submission, opened through the Panel only, deleted with it; the mail has a link. Mail only: the file goes as an attachment and is deleted afterwards – large files may fail at the mail server. If the form stores no submissions, files only go as attachments.',
 	'formwizard.log.attachments' => '{count} attachment(s)',
+	/* -------------- Captcha, limit --------------*/
+	'formwizard.limited' => 'Too many requests in a short time. Please try again in a few minutes.',
+	'formwizard.error.captcha' => 'Please confirm you are not a robot.',
+	'formwizard.captcha.form' => 'Captcha',
+	'formwizard.captcha.form.help' => 'If a captcha is set up under Forms › Settings. Off: this form without.',
+	'formwizard.spam' => 'Spam protection',
+	'formwizard.spam.always' => 'Always on, invisible: a hidden field only bots fill in, and at least 3 seconds between loading and sending.',
+	'formwizard.captcha' => 'Captcha',
+	'formwizard.captcha.none' => 'None',
+	'formwizard.captcha.help' => 'Friendly Captcha: from the EU, no cookies. Turnstile: free, data to Cloudflare. hCaptcha: sometimes shows a puzzle. Loads a script of the provider – name it in the privacy policy. For all forms; a form can switch it off.',
+	'formwizard.captcha.sitekey' => 'Site key',
+	'formwizard.captcha.secret' => 'Secret key',
+	'formwizard.captcha.secret.stored' => 'Stored encrypted – only enter it to change it.',
+	'formwizard.captcha.secret.unreadable' => 'Not readable (key file missing) – please enter it again.',
+	'formwizard.captcha.secret.none' => 'Stored encrypted (site/config/formwizard.key). Without it the captcha stays off.',
+	'formwizard.rate' => 'Limit submissions',
+	'formwizard.rate.limit' => 'At most',
+	'formwizard.rate.minutes' => 'per',
+	'formwizard.rate.minutes.unit' => 'minutes',
+	'formwizard.rate.help' => 'Per visitor, counted by a hash of the IP address – the address itself isn’t stored and is forgotten after the time.',
 ];

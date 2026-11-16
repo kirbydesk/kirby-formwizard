@@ -77,7 +77,7 @@ Jeder Schritt endet mit etwas, das sich im Panel und auf der Website ausprobiere
 8. ✅ **Uploads:**
    - Feld mit Typen und Größe, Ablage beim Eingang (geschützt, Download im Panel) bzw. Anhang
    - Mit dem Eingang gelöscht
-9. **Captcha und Begrenzung:**
+9. ✅ **Captcha und Begrenzung** (Schlüssel verschlüsselt in den Formular-Einstellungen statt in der `.env`):
    - Anbieter wählbar, Schlüssel über `secrets` in die `.env`; dafür `pwSecrets::PLUGINS` ergänzen oder auf Selbst-Anmeldung umstellen
    - Begrenzung über ein Kürzel der IP-Adresse
 10. **Project Wizard:**

@@ -300,6 +300,15 @@ return array_merge([
 						'help'      => 'formwizard.store.help',
 						'width'     => '1/2',
 					],
+					'captcha' => [
+						'label'     => 'formwizard.captcha.form',
+						'type'      => 'toggle',
+						'default'   => true,
+						'translate' => false,
+						'text'      => ['formwizard.off', 'formwizard.on'],
+						'help'      => 'formwizard.captcha.form.help',
+						'width'     => '1/2',
+					],
 					'closed' => [
 						'label'     => 'formwizard.closed',
 						'type'      => 'toggle',

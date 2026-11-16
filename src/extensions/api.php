@@ -77,7 +77,7 @@ return [
 			'method'  => 'GET',
 			'action'  => function () {
 				fwEditor::guard();
-				return fwEditor::settings();
+				return fwSettings::forPanel();
 			},
 		],
 		[
@@ -85,7 +85,7 @@ return [
 			'method'  => 'POST',
 			'action'  => function () {
 				fwEditor::guard();
-				return fwEditor::saveSettings(kirby()->request()->body()->toArray());
+				return fwSettings::save(kirby()->request()->body()->toArray());
 			},
 		],
 

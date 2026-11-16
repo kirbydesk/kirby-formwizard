@@ -89,7 +89,6 @@
 		<!-- the settings of all forms -->
 		<section v-else-if="mode === 'settings'" class="fw-pw-settings">
 			<k-form v-if="settings" :fields="settingsFields" :value="settings" @input="settings = $event; settingsDirty = true" @submit="saveSettings" />
-			<k-box theme="info" class="fw-pw-note" :text="$t('formwizard.settings.spam')" />
 			<div class="fw-pw-buttons">
 				<k-button variant="filled" size="sm" theme="positive" icon="check" :text="$t('save')" :disabled="!settingsDirty || busy" @click="saveSettings" />
 			</div>
@@ -150,6 +149,11 @@ export default {
 			return { title: { name: 'title', type: 'text', label: this.$t('formwizard.form.name'), required: true, autofocus: true } };
 		},
 		settingsFields() {
+			const secretHelp = {
+				stored: this.$t('formwizard.captcha.secret.stored'),
+				unreadable: this.$t('formwizard.captcha.secret.unreadable'),
+				none: this.$t('formwizard.captcha.secret.none')
+			}[this.settings?.captchaSecretState || 'none'];
 			return {
 				retention: {
 					name: 'retention',
@@ -159,7 +163,34 @@ export default {
 					empty: false,
 					width: '1/2',
 					options: [30, 90, 180, 365, 0].map((d) => ({ value: d, text: d ? this.$t('formwizard.settings.retention.days', { days: d }) : this.$t('formwizard.settings.retention.never') }))
-				}
+				},
+				headlineSpam: { name: 'headlineSpam', type: 'headline', label: this.$t('formwizard.spam') },
+				spamInfo: { name: 'spamInfo', type: 'info', text: this.$t('formwizard.spam.always') },
+				captcha: {
+					name: 'captcha',
+					type: 'select',
+					label: this.$t('formwizard.captcha'),
+					empty: false,
+					width: '1/2',
+					help: this.$t('formwizard.captcha.help'),
+					options: [
+						{ value: 'none', text: this.$t('formwizard.captcha.none') },
+						{ value: 'friendly', text: 'Friendly Captcha' },
+						{ value: 'turnstile', text: 'Cloudflare Turnstile' },
+						{ value: 'hcaptcha', text: 'hCaptcha' }
+					]
+				},
+				// (the keys only with a provider chosen)
+				...(this.settings && this.settings.captcha && this.settings.captcha !== 'none'
+					? {
+							captchaSiteKey: { name: 'captchaSiteKey', type: 'text', label: this.$t('formwizard.captcha.sitekey'), width: '1/2' },
+							captchaSecret: { name: 'captchaSecret', type: 'password', label: this.$t('formwizard.captcha.secret'), help: secretHelp, width: '1/2', autocomplete: 'new-password' }
+						}
+					: {}),
+				rate: { name: 'rate', type: 'toggle', label: this.$t('formwizard.rate'), text: [this.$t('formwizard.off'), this.$t('formwizard.on')], width: '1/2' },
+				rateLimit: { name: 'rateLimit', type: 'number', label: this.$t('formwizard.rate.limit'), min: 1, max: 100, width: '1/4', when: { rate: true } },
+				rateMinutes: { name: 'rateMinutes', type: 'number', label: this.$t('formwizard.rate.minutes'), min: 1, max: 1440, width: '1/4', after: this.$t('formwizard.rate.minutes.unit'), when: { rate: true } },
+				rateInfo: { name: 'rateInfo', type: 'info', text: this.$t('formwizard.rate.help'), when: { rate: true } }
 			};
 		}
 	},

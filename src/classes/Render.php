@@ -102,6 +102,9 @@ class fwRender
 			$html .= self::field($field, $form, $page, $id, $values[$field['key']] ?? null, $errors[$field['key']] ?? null);
 		}
 
+		// the captcha, if set up (Project Wizard › Forms › Settings)
+		$html .= fwCaptcha::widget($form, $id, $errors['captcha'] ?? null);
+
 		$button = $form->content()->get('buttonText')->or(t('formwizard.button.default'))->value();
 		$html .= '<div data-formwizard-submit data-field="buttons"><div data-field="button"><button type="submit"><span class="link-text">' . esc($button) . '</span></button></div></div>' . "\n";
 		$html .= '</form>' . "\n";

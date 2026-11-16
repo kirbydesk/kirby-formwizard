@@ -17,12 +17,13 @@ Guidance for Claude Code when working on this plugin.
 - **Panel menu:** only "Submissions" (area `formwizard-submissions`, with the count of new ones).
 - **Submissions** are JSON files (`fwSubmissions`): `content/.formwizard/submissions/<form uuid>/<Ymd-His-rand>.json`, the fields as they were sent (label, type, value, display text). Counts cached in the plugin cache. Panel views in the area `formwizard-submissions` (list with filters in the query, detail), CSV as a Panel request, status/delete via the plugin API. Area closures (`menu`, `current`) must accept being called without arguments – Kirby resolves them when sending a view.
 - **After sending:** `fwActions::run()` – team mail (routes `when` = `"<block id>:<value>"` as the fields' conditions, else `recipients`, else `pwMail::recipient()`), confirmation (first e-mail field), webhook (JSON POST); each a line in the submission's `log`. Placeholders in texts: `{key}` or `{{ key }}` – but in blueprint help/placeholder texts Kirby resolves braces itself, so those use single braces or real queries (`{{ page.title }}`).
+- **Settings of all forms** (`fwSettings`, `content/.projectwizard/formwizard.json`): retention, captcha (`fwCaptcha`: widget in `fwRender::form()`, checked in `fwSubmit` once the fields are fine; secret encrypted with `site/config/formwizard.key`), limit (plugin cache, key = hash of the IP).
 - **Uploads** (`fwUploads`): checked in `fwSubmit::checkFiles()` (MIME by content), put in place by `keep()` – stored in `submissions/<form>/<id>/` or a temp folder for the mail only (`mode()`: store/attach/both; nothing stored → attach) – and `finish()` after the actions. Download only through the Panel request `formwizard/submissions/<id>/files/<name>`.
 - **The mail server** lives in the Project Wizard (`pwMail`: `ready()`, `send([...])`, `recipient()`); kirbyblock-contactform keeps its own and is not touched.
 
 ## Directories
 
-- `src/classes/` — PHP classes (`fwForms`, `fwFields`, `fwUploads`, `fwRender`, `fwSubmit`, `fwSpam`, `fwSubmissions`, `fwSubmissionsView`, `fwEditor`, `fwActions`, `FormwizardFormPage`)
+- `src/classes/` — PHP classes (`fwForms`, `fwFields`, `fwUploads`, `fwRender`, `fwSubmit`, `fwSpam`, `fwSubmissions`, `fwSubmissionsView`, `fwEditor`, `fwActions`, `fwSettings`, `fwCaptcha`, `FormwizardFormPage`)
 - `snippets/`, `src/css/`, `assets/` — the block on the website
 - `src/extensions/` — Kirby extension points (areas, blueprints, hooks, routes, translations)
 - `src/components/`, `src/views/`, `src/pw/` — Vue Panel components (kirbyup); `src/pw/` the Project Wizard tab
