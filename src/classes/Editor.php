@@ -66,7 +66,8 @@ class fwEditor
 		$items[] = ['view' => 'new', 'text' => t('formwizard.form.new'), 'icon' => 'add'];
 		$items[] = '-';
 		$items[] = ['view' => 'list', 'text' => t('formwizard.forms.all'), 'icon' => 'list-bullet'];
-		$items[] = ['link' => 'formwizard/submissions', 'text' => t('formwizard.submissions'), 'icon' => 'email', 'badge' => fwSubmissions::countNew() ?: null];
+		// (the submissions: in Kirby's menu on the left – everyday work, also for
+		// editors without the Project Wizard; a form's overview links there)
 		$items[] = ['view' => 'settings', 'text' => t('formwizard.settings'), 'icon' => 'settings'];
 		return $items;
 	}
