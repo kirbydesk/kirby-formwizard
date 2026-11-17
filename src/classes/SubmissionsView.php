@@ -44,10 +44,12 @@ class fwSubmissionsView
 		];
 	}
 
-	/** May the user read and change submissions? (the access to the area) */
+	/** May the user read and change submissions? (the access to the area; unknown: allowed, see fwEditor::guard()) */
 	public static function allowed(): bool
 	{
 		$user = kirby()->user();
-		return $user !== null && $user->role()->permissions()->for('access', 'formwizard-submissions') !== false;
+		if ($user === null) return false;
+		$permissions = $user->role()->permissions();
+		return $permissions->for('access', 'panel') !== false && $permissions->for('access', 'formwizard-submissions', true) !== false;
 	}
 }

@@ -27,11 +27,16 @@ class fwEditor
 		'settings' => ['buttontext', 'privacypage', 'store', 'captcha', 'closed', 'closedtext'],
 	];
 
-	/** May the user edit forms? (who may open the Project Wizard) */
+	/**
+	 * May the user edit forms? (who may open the Project Wizard) – an access
+	 * Kirby doesn't know counts as allowed: before Kirby 5.6 the areas'
+	 * accesses are unknown in API requests, every admin would be refused
+	 */
 	public static function guard(): void
 	{
 		$user = kirby()->user();
-		if (!$user || $user->role()->permissions()->for('access', 'projectwizard') === false) {
+		$permissions = $user?->role()->permissions();
+		if (!$user || $permissions->for('access', 'panel') === false || $permissions->for('access', 'projectwizard', true) === false) {
 			throw new PermissionException(message: 'Not allowed.');
 		}
 	}
