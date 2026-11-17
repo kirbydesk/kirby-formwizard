@@ -35,6 +35,8 @@ Kirby::plugin('kirbydesk/kirby-formwizard', [
 		'retention' => 180,
 		// (the counts of the submissions)
 		'cache' => true,
+		// sends mails: the Project Wizard shows Settings › Sending
+		'mail' => true,
 		// the tab "Forms" in the Project Wizard's header (the forms are built there)
 		'projectwizard' => fn () => [
 			'key'       => 'forms',
