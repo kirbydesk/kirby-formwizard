@@ -67,7 +67,7 @@ class fwSubmissions
 		$record['title']   = self::title($record);
 		$record['summary'] = self::summary($record);
 
-		if ($form->content()->get('store')->isEmpty() || $form->content()->get('store')->toBool()) {
+		if ($form->fwStores()) {
 			self::write($record);
 		} else {
 			$record['stored'] = false;
@@ -90,13 +90,13 @@ class fwSubmissions
 		return (string) $value;
 	}
 
-	/** Who sent it: the field "name", else the first text field, else the e-mail */
+	/** Who sent it: the field "name" (or first and last name), else the first text field, else the e-mail */
 	private static function title(array $record): string
 	{
 		$byKey = array_column($record['fields'], 'display', 'key');
-		foreach (['name', 'vorname'] as $key) {
+		foreach (['name' => null, 'firstname' => 'lastname', 'vorname' => 'nachname'] as $key => $last) {
 			if (!empty($byKey[$key])) {
-				return trim($byKey[$key] . (($key === 'vorname' && !empty($byKey['nachname'])) ? ' ' . $byKey['nachname'] : ''));
+				return trim($byKey[$key] . ($last !== null && !empty($byKey[$last]) ? ' ' . $byKey[$last] : ''));
 			}
 		}
 		foreach ($record['fields'] as $f) if ($f['type'] === 'fwtext' && $f['display'] !== '') return $f['display'];
@@ -169,6 +169,13 @@ class fwSubmissions
 		F::remove(self::file($id, $record['formId']));
 		self::forget();
 		return true;
+	}
+
+	/** All submissions of a form deleted, with their files (the form is deleted) */
+	public static function deleteForm(Page $form): void
+	{
+		Dir::remove(self::root() . '/' . self::folder($form));
+		self::forget();
 	}
 
 	/* -------------- Counting (cached) --------------*/

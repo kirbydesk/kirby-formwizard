@@ -47,7 +47,7 @@ class fwRender
 				'key'      => $key,
 				'label'    => (string) $c->get('label')->value(),
 				'required' => $type !== 'fwinfo' && $type !== 'fwhidden' && $c->get('required')->toBool(),
-				'width'    => $c->get('width')->value() === 'full' || ($c->get('width')->isEmpty() && fwForms::TYPES[$type][1]) ? 'full' : 'half',
+				'width'    => in_array($c->get('width')->value(), fwForms::WIDTHS, true) ? $c->get('width')->value() : (fwForms::TYPES[$type][1] ? 'full' : 'half'),
 				'block'    => $block,
 				'when'     => null,
 			];
@@ -63,6 +63,14 @@ class fwRender
 			$list[$key] = $field;
 		}
 		return $list;
+	}
+
+	/** The send button's width (auto, full) and alignment (left, center, right) */
+	public static function buttonLayout(Page $form): array
+	{
+		$width = $form->content()->get('buttonWidth')->value() === 'full' ? 'full' : 'auto';
+		$align = $form->content()->get('buttonAlign')->value();
+		return [$width, in_array($align, ['center', 'right'], true) ? $align : 'left'];
 	}
 
 	/** Is a field shown with these values (its condition met)? */
@@ -106,7 +114,8 @@ class fwRender
 		$html .= fwCaptcha::widget($form, $id, $errors['captcha'] ?? null);
 
 		$button = $form->content()->get('buttonText')->or(t('formwizard.button.default'))->value();
-		$html .= '<div data-formwizard-submit data-field="buttons"><div data-field="button"><button type="submit"><span class="link-text">' . esc($button) . '</span></button></div></div>' . "\n";
+		[$width, $align] = self::buttonLayout($form);
+		$html .= '<div data-formwizard-submit data-width="' . $width . '" data-align="' . $align . '" data-field="buttons"><div data-field="button"><button type="submit"><span class="link-text">' . esc($button) . '</span></button></div></div>' . "\n";
 		$html .= '</form>' . "\n";
 		return $html;
 	}
@@ -193,7 +202,8 @@ class fwRender
 
 			case 'fwconsent':
 				$writer = trim((string) $c->get('text')->value());
-				$privacy = $form->content()->get('privacyPage')->toPage();
+				// (the consent's page; up to formwizard 0.1 the form's)
+				$privacy = $c->get('privacy')->toPage() ?? $form->content()->get('privacyPage')->toPage();
 				$consent = $writer !== '' ? strip_tags($writer, '<a><strong><b><em><i>') : ($privacy
 					? tt('formwizard.consent.link', null, ['link' => '<a href="' . $privacy->url() . '">' . esc(t('formwizard.consent.privacy')) . '</a>'])
 					: esc(t('formwizard.consent.default')));

@@ -1,21 +1,49 @@
 <?php
 
+use Kirby\Cms\Page;
 use Kirby\Http\Response;
 use Kirby\Panel\Panel;
 
 /**
- * The Panel menu: "Submissions" – for everyone who reads them, also without
- * the Project Wizard (the forms are built there, in its tab "Forms"). New
- * submissions: a badge.
+ * The Panel menu: each form that stores its submissions, by its name – for
+ * everyone who reads them, also without the Project Wizard (the forms are
+ * built there, in its tab "Forms"). New submissions: a badge. The views
+ * (all submissions, filtered by form; one submission) in one area without
+ * an entry of its own.
  */
-$badge = fn () => ($n = fwSubmissions::countNew()) > 0 ? ['badge' => ['text' => (string) $n, 'theme' => 'notice']] : [];
+$badge = fn (Page $form) => ($n = fwSubmissions::countNew($form)) > 0 ? ['badge' => ['text' => (string) $n, 'theme' => 'notice']] : [];
 
-return [
+// (the form of the submissions shown: the list's filter or the one opened)
+$shownFolder = function (): ?string {
+	$request = kirby()->request();
+	if (($folder = (string) $request->get('form', '')) !== '') return $folder;
+	if (preg_match('#formwizard/submissions/([^/]+)$#', $request->path()->toString(), $m)) return fwSubmissions::find($m[1])['formId'] ?? null;
+	return null;
+};
+
+$areas = [];
+foreach (fwForms::scannedFolders() as $folder) {
+	$areas['formwizard-form-' . strtolower($folder)] = fn () => [
+		'label'   => ($form = fwForms::byFolder($folder)) ? $form->title()->value() : t('formwizard.submissions', 'Submissions'),
+		'icon'    => 'email',
+		'link'    => 'formwizard/submissions?form=' . rawurlencode($folder),
+		'menu'    => function () use ($folder, $badge) {
+			$form = fwForms::byFolder($folder);
+			if (!$form instanceof FormwizardFormPage || !$form->fwStores() || !fwSubmissionsView::allowed()) return false;
+			return $badge($form) ?: true;
+		},
+		'current' => fn ($current = null) => $current === 'formwizard-submissions' && $shownFolder() === $folder,
+	];
+}
+
+return $areas + [
 	'formwizard-submissions' => fn () => [
 		'label'   => t('formwizard.submissions', 'Submissions'),
+		// (above the list and a submission: the name of their form)
+		'breadcrumbLabel' => ($folder = $shownFolder()) && ($form = fwForms::byFolder($folder)) ? $form->title()->value() : t('formwizard.submissions', 'Submissions'),
 		'icon'    => 'email',
 		'link'    => 'formwizard/submissions',
-		'menu'    => fn ($areas = [], $permissions = [], $current = null) => $badge() ?: true,
+		'menu'    => false,
 		'views'   => [
 			// all submissions: filtered by form, status, a search; 30 a page
 			[
@@ -49,9 +77,10 @@ return [
 					$page  = max(1, min((int) $request->get('page', 1), (int) ceil(max($total, 1) / $limit)));
 					$items = array_slice($items, ($page - 1) * $limit, $limit);
 
+					$name = $filter['form'] !== '' ? ($forms[$filter['form']] ?? null) : null;
 					return [
 						'component'  => 'k-formwizard-submissions-view',
-						'title'      => t('formwizard.submissions', 'Submissions'),
+						'title'      => $name ?? t('formwizard.submissions', 'Submissions'),
 						'props'      => [
 							'items' => array_map(fn ($r) => [
 								'id'      => $r['id'],
@@ -64,6 +93,8 @@ return [
 							], $items),
 							'forms'      => array_map(fn ($id, $name) => ['value' => $id, 'text' => $name], array_keys($forms), $forms),
 							'filter'     => $filter,
+							// (one form's: its name as heading, no choice of form)
+							'formName'   => $name,
 							'pagination' => ['page' => $page, 'limit' => $limit, 'total' => $total],
 							'retention'  => fwSubmissions::retention(),
 							'csv'        => Panel::url('formwizard/submissions.csv') . ($filter['form'] !== '' ? '?form=' . rawurlencode($filter['form']) : ''),
@@ -84,6 +115,8 @@ return [
 						'breadcrumb' => [['label' => $record['title'], 'link' => 'formwizard/submissions/' . $id]],
 						'props'      => [
 							'submission' => fwSubmissionsView::detail($record),
+							// back to its form's list
+							'back'       => ['link' => 'formwizard/submissions?form=' . rawurlencode($record['formId']), 'text' => $form instanceof Page ? $form->title()->value() : $record['formName']],
 							'formLink'   => $form instanceof FormwizardFormPage ? fwForms::editUrl($form) : null,
 						],
 					];

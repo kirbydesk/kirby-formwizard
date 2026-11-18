@@ -23,7 +23,7 @@ Plan and decisions: [PLAN.md](PLAN.md). Mockups: [mockups/](mockups/).
 A form has three tabs, a status (Entwurf: not offered in the block yet; Aktiv) and a preview in the project's look:
 
 - **Felder** – the field types as blocks, sorted by dragging: Text, E-Mail, Telefon, Zahl, Datum, mehrzeiliger Text, Auswahlliste, eine Option, mehrere Optionen, Datei-Upload, verstecktes Feld (page address, URL parameter or a fixed value), Zwischentitel/Hinweis, Zustimmung. Each with label, key, required, width (half/full), help, placeholder and its own settings (length, range, options, file types and size …). **„Nur zeigen, wenn“:** a field shows only while a choice further up has a value. The key is made from the label when the field is first saved and kept after – placeholders, the export and the webhook rely on it.
-- **Nach dem Absenden** – a thank-you text or a page; the **mail to the team** (the form's recipients, else the default recipient; „Je nach Auswahl an andere Adressen“, e.g. Anliegen = Angebot → vertrieb@…; subject with `{name}`, `{form}`, `{page}`, `{site}`); the **confirmation** to the sender (first e-mail field; own text, a copy of the details); **uploads** (keep with the submission, attach to the mail, or both); a **webhook** (JSON POST, e.g. CRM, Zapier, n8n).
+- **Nach dem Absenden** – a thank-you text or a page; the **mail to the team** (the form's recipients – none: no mail to the team; subject with `{name}`, `{form}`, `{page}`, `{site}`); the **confirmation** to the sender (first e-mail field; own text, a copy of the details); **uploads** (kept with a stored submission; per upload field also attached to the mail); a **webhook** (JSON POST, e.g. CRM, Zapier, n8n).
 - **Einstellungen** – the form's name, the button's text, the privacy page (link in „Zustimmung“), store submissions or only send, captcha on/off, close the form (a note instead).
 
 On multilingual sites the editor has a language switch; keys, option values, conditions and addresses stay the same in every language.
@@ -48,7 +48,7 @@ Stored as JSON in `content/.formwizard/submissions/<form>/<id>.json`, uploads be
 
 ## Styling
 
-CSS variables `--pwform-*` per colour variant, set in the Project Wizard (*Blöcke › Formular*). Overrides in `site/patches/css/kirby-formwizard/` as for every block. The markup uses data attributes: `form[data-formwizard]`, `[data-formwizard-field][data-type][data-width]`, `[data-formwizard-error]`, `[data-formwizard-message="sent|failed|invalid|closed"]`.
+CSS variables `--pwform-*` per colour variant, set in the Project Wizard (*Blöcke › Formular*). Overrides in `site/patches/css/kirby-formwizard/` as for every block. The markup uses data attributes: `form[data-formwizard]`, `[data-formwizard-field][data-type][data-width]`, `[data-formwizard-error]`, `[data-formwizard-message="sent|failed|invalid"]`.
 
 ## Options
 

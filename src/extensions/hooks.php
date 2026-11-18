@@ -14,6 +14,6 @@ return [
 	'panel.route:before' => function ($route, $path) {
 		$slug = fwForms::formOfPanelPath((string) $path);
 		if ($slug === null) return;
-		\Kirby\Panel\Panel::go('projectwizard?tab=forms&view=' . ($slug === '' ? 'list' : 'form:' . rawurlencode($slug)));
+		\Kirby\Panel\Panel::go('projectwizard?tab=forms&view=' . ($slug === '' ? 'settings' : 'form:' . rawurlencode($slug)));
 	},
 ];

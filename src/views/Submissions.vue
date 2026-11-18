@@ -3,14 +3,14 @@
 	     by form, status, a search; a click opens one -->
 	<k-panel-inside class="k-formwizard-submissions-view">
 		<k-header>
-			{{ $t('formwizard.submissions') }}
+			{{ formName || $t('formwizard.submissions') }}
 			<template #buttons>
 				<k-button icon="download" variant="filled" size="sm" :link="csv" :text="$t('formwizard.submissions.csv')" :disabled="!pagination.total" />
 			</template>
 		</k-header>
 
 		<div class="fw-subs-filter">
-			<select :value="filter.form" @change="go({ form: $event.target.value })">
+			<select v-if="!formName" :value="filter.form" @change="go({ form: $event.target.value })">
 				<option value="">{{ $t('formwizard.submissions.allForms') }}</option>
 				<option v-for="form in forms" :key="form.value" :value="form.value">{{ form.text }}</option>
 			</select>
@@ -61,6 +61,7 @@ export default {
 		items: { type: Array, default: () => [] },
 		forms: { type: Array, default: () => [] },
 		filter: { type: Object, default: () => ({}) },
+		formName: { type: String, default: null },
 		pagination: { type: Object, default: () => ({ page: 1, limit: 30, total: 0 }) },
 		retention: { type: Number, default: 0 },
 		csv: { type: String, default: '' }

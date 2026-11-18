@@ -15,6 +15,9 @@ class fwForms
 	 * The field types: [icon, wide by default, has options]. The order is
 	 * the order in the picker, the groups are those of the picker.
 	 */
+	/** A field's widths (as Kirby's, the half and the whole by name) */
+	public const WIDTHS = ['1/4', '1/3', 'half', '2/3', '3/4', 'full'];
+
 	public const TYPES = [
 		'fwtext'       => ['text', false, false],
 		'fwemail'      => ['email', false, false],
@@ -56,6 +59,36 @@ class fwForms
 		return (string) option('kirbydesk.kirby-formwizard.slug', 'forms');
 	}
 
+	/**
+	 * The forms' submission folders, read from the content folder – for the
+	 * Panel's menu, whose entries Kirby takes while loading the plugins (no
+	 * pages yet): the UUID from the text file, else the folder's slug
+	 */
+	public static function scannedFolders(): array
+	{
+		$folders = [];
+		foreach (glob(kirby()->root('content') . '/' . self::slug() . '/*', GLOB_ONLYDIR) ?: [] as $dir) {
+			$files = glob($dir . '/formwizard-form*.txt') ?: [];
+			if ($files === []) continue;
+			$uuid = '';
+			foreach ($files as $file) {
+				if (preg_match('/^Uuid:\s*(\S+)/m', (string) file_get_contents($file), $m)) $uuid = $m[1];
+			}
+			$slug = preg_replace('/^\d+_/', '', basename($dir));
+			$folders[] = preg_replace('/[^a-z0-9_-]/i', '', $uuid !== '' ? $uuid : $slug);
+		}
+		return array_values(array_unique(array_filter($folders)));
+	}
+
+	/** The form whose submissions are in this folder */
+	public static function byFolder(string $folder): ?Page
+	{
+		foreach (self::forms() as $form) {
+			if (fwSubmissions::folder($form) === $folder) return $form;
+		}
+		return null;
+	}
+
 	public static function container(): ?Page
 	{
 		$page = page(self::slug());
@@ -86,6 +119,47 @@ class fwForms
 		} catch (\Throwable $e) {
 			return null;
 		}
+	}
+
+	/**
+	 * Forms have no drafts any more (up to formwizard 0.1): one still a
+	 * draft is made active once – it would no longer be offered in the blocks
+	 */
+	public static function activateDrafts(): void
+	{
+		$drafts = self::container()?->drafts()->filterBy('intendedTemplate', 'formwizard-form');
+		foreach ($drafts ?? [] as $form) {
+			try {
+				kirby()->impersonate('kirby', fn () => $form->changeStatus('listed'));
+			} catch (\Throwable $e) {
+				// (stays a draft; tried again next time)
+			}
+		}
+	}
+
+	/**
+	 * Up to formwizard 0.1 an empty recipient meant the project's default
+	 * one (Project Wizard › Settings › Sending); now it means no mail to the
+	 * team. Forms that relied on it get that address written in – once, so
+	 * nothing changes for them
+	 */
+	public static function adoptDefaultRecipient(): void
+	{
+		if (fwSettings::done('recipients')) return;
+		$kirby   = kirby();
+		$default = class_exists('pwMail') ? implode(', ', pwMail::recipient()) : '';
+		if ($default !== '') {
+			foreach (self::forms() as $form) {
+				$c = $form->content($kirby->defaultLanguage()?->code());
+				if (!$form->fwMails() || trim((string) $c->get('recipients')->value()) !== '') continue;
+				try {
+					$kirby->impersonate('kirby', fn () => $form->update(['recipients' => $default], $kirby->defaultLanguage()?->code()));
+				} catch (\Throwable $e) {
+					return; // (tried again next time)
+				}
+			}
+		}
+		fwSettings::markDone('recipients');
 	}
 
 	/** All forms (drafts included) */

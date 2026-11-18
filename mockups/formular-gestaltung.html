@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reiter Gestaltung</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #2a2a2e; color: #16171a; padding: 24px 16px 60px; }
+  h1 { font-size: 18px; color: #f2f2f4; font-weight: 600; }
+  .lead { color: #a8a8ae; margin: 4px 0 14px; max-width: 1240px; }
+  .wrap { max-width: 1240px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); border-radius: 10px; overflow: hidden; }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } }
+  .panel { background: #efefef; padding: 18px 28px 30px; min-width: 0; }
+  .top { display: flex; gap: 6px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
+  .top span { background: #fff; border-radius: 6px; padding: 3px 9px; font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .top span.on { background: #000; color: #fff; }
+  .titlerow { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd; }
+  .titlerow h2 { font-size: 24px; font-weight: 500; flex: 1; }
+  .lang { background: #e2e2e4; border-radius: 5px; padding: 3px 9px; font-size: 13px; }
+  .tabs { display: flex; gap: 18px; margin: 14px 0 0; font-size: 14px; color: #6b6f76; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
+  .tabs span { padding-bottom: 7px; }
+  .tabs span.on { color: #16171a; border-bottom: 2px solid #16171a; font-weight: 500; }
+  .new { outline: 2px dashed #ff9f0a; outline-offset: 3px; border-radius: 4px; }
+  .hint { color: #6b6f76; font-size: 13px; margin: 16px 0 6px; }
+  .sec { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 6px; font-weight: 500; }
+  .vsw { display: inline-flex; background: #fff; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,.08); overflow: hidden; }
+  .vsw button { border: 0; background: none; font: inherit; font-size: 11px; padding: 3px 10px; cursor: pointer; display: inline-flex; gap: 5px; align-items: center; }
+  .vsw button.on { background: #000; color: #fff; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #bbb; display: inline-block; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  td { border-top: 1px solid #ececec; height: 36px; font-size: 13px; padding: 0 12px; }
+  tr:first-child td { border-top: 0; }
+  td.k { width: 40%; font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #444; background: #fafafa; border-right: 1px solid #ececec; }
+  .px { color: #6aa0e0; font-family: ui-monospace, Menlo, monospace; font-size: 12px; margin-right: 8px; }
+  .cv { display: flex; align-items: center; gap: 10px; font-family: ui-monospace, Menlo, monospace; }
+  .cv input { width: 20px; height: 20px; border: 1px solid #ddd; border-radius: 4px; padding: 0; background: none; cursor: pointer; }
+  .cv .ph { color: #9a9aa0; }
+  .help { color: #6b6f76; font-size: 12px; margin-top: 6px; }
+  .btns { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .save { background: #c9e5a0; color: #3d5a1e; border-radius: 4px; padding: 4px 12px; font-size: 13px; }
+  .prev { background: #e5e4dc; min-width: 0; }
+  .switches { display: flex; gap: 8px; padding: 10px 16px; background: #ebebeb; border-bottom: 1px solid #ddd; }
+  .switches span { background: #fff; border-radius: 5px; padding: 2px 8px; font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .switches .r { margin-left: auto; }
+  .block { margin: 30px 24px; padding: 40px 24px; transition: background .2s; }
+  .f { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .f .full { grid-column: 1 / -1; }
+  .lab { font-size: 12.5px; font-weight: 600; display: block; margin-bottom: 4px; }
+  .star { color: var(--focus); }
+  .inp { height: 40px; border: 1px solid var(--border); background: var(--bg); border-radius: var(--radius); }
+  .inp.ta { height: 80px; }
+  .btn { margin-top: 16px; display: inline-block; padding: 10px 22px; border-radius: 999px; font-weight: 700; }
+  .notes { max-width: 1240px; color: #ff9f0a; font-size: 12.5px; margin-top: 12px; }
+  .notes p + p { margin-top: 6px; }
+</style>
+</head>
+<body>
+<h1>Formulareditor – Reiter „Gestaltung“</h1>
+<p class="lead">Variante oben bei „Farben“ umschalten, Farben anklicken und ändern – die Vorschau rechts folgt. Neu: orange umrandet; Erläuterungen in Orange gehören nicht zum Plugin.</p>
+<div class="wrap">
+  <div class="panel">
+    <div class="top"><span>Projekt ⌄</span><span>Elemente ⌄</span><span>Blöcke ⌄</span><span class="on">Formulare ⌄</span><span>Einstellungen ⌄</span></div>
+    <div class="titlerow"><h2>📋 Kontakt</h2><span class="lang">文A DE ⌄</span></div>
+    <div class="tabs"><span>Felder</span><span>Antwort</span><span>Aktionen</span><span class="on new">◐ Gestaltung</span></div>
+    <p class="hint new">Gilt für alle Formulare – wie unter Blöcke › Formular › Gestaltung.</p>
+
+    <div class="sec">Felder</div>
+    <table><tr><td class="k">Innenabstand</td><td><span class="px">12px</span>0.75 rem</td></tr><tr><td class="k">Ecken</td><td><span class="px">6px</span><span id="rad">0.375</span> rem</td></tr><tr><td class="k">Rahmenstärke</td><td>1.0 px</td></tr></table>
+    <p class="help">Innenabstand, Ecken und Rahmen der Eingabefelder. Der Knopf hat den Button-Stil der Farbvariante.</p>
+
+    <div class="sec">Farben <span class="vsw" id="vsw"></span></div>
+    <table id="colors"></table>
+    <p class="help">Die Farben des Formulars für jede Variante. Fokus: der Rahmen des Feldes, in dem man gerade schreibt, und die Sternchen der Pflichtfelder. Bezeichnung: … Fehlerhinweis: …</p>
+
+    <div class="sec">Abstände</div>
+    <table><tr><td class="k">Abstand zwischen Feldern</td><td><span class="px">16px</span>1.0 rem</td></tr><tr><td class="k">Abstand zur Einleitung</td><td><span class="px">24px</span>1.5 rem</td></tr></table>
+    <p class="help">Abstand zwischen den Feldern und zur Einleitung.</p>
+
+    <div class="btns"><span class="save">✓ Speichern</span></div>
+  </div>
+  <div class="prev">
+    <div class="switches"><span>🖥 ⌄</span><span id="vname">● Standard ⌄</span><span class="r">⚠</span></div>
+    <div class="block" id="block">
+      <div class="f" id="form">
+        <div><span class="lab">Name <span class="star">*</span></span><div class="inp"></div></div>
+        <div><span class="lab">E-Mail <span class="star">*</span></span><div class="inp"></div></div>
+        <div class="full"><span class="lab">Nachricht <span class="star">*</span></span><div class="inp ta"></div></div>
+      </div>
+      <span class="btn" id="btn">Absenden</span>
+    </div>
+  </div>
+</div>
+<div class="notes">
+  <p><b>Reiter „Gestaltung“</b> im Formulareditor mit genau den Einstellungen von Blöcke › Formular › Gestaltung: Felder, Farben je Variante, Abstände – gespeichert am selben Ort. Beide Stellen zeigen immer dasselbe.</p>
+  <p><b>Hinweis oben:</b> „Gilt für alle Formulare – wie unter Blöcke › Formular › Gestaltung.“ (Text zur Freigabe.)</p>
+  <p><b>Die Variante</b> bei „Farben“ und die Variante der Vorschau sind gekoppelt: wer „Variante“ bearbeitet, sieht sie rechts. Speichern wie im Wizard üblich mit dem eigenen Knopf; ungesicherte Gestaltung und ungesicherte Felder fragen beim Verlassen getrennt nach.</p>
+</div>
+<script>
+  const V = {
+    default:  { name: 'Standard',   dot: '#fff',  section: '#FFFFFF', text: '#16171A', bg: '#FAFAFA', border: '#D4D4D8', ftext: '#16171A', focus: '#2563EB', label: '', help: '', error: '#C1121F', btn: ['#000', '#fff'] },
+    variant:  { name: 'Variante',   dot: '#e00',  section: '#E30613', text: '#FFFFFF', bg: '#FFFFFF', border: '#FFFFFF', ftext: '#16171A', focus: '#FFFFFF', label: '#FFFFFF', help: '', error: '#FFE066', btn: ['#fff', '#E30613'] },
+    variant2: { name: 'Variante 2', dot: '#fff',  section: '#FFFFFF', text: '#16171A', bg: '#F4F4F5', border: '#D4D4D8', ftext: '#16171A', focus: '#2563EB', label: '', help: '', error: '#C1121F', btn: ['#16171A', '#fff'] }
+  };
+  let cur = 'default';
+  const ROWS = [['bg', 'Hintergrundfarbe'], ['border', 'Rahmen'], ['ftext', 'Text'], ['focus', 'Fokus'], ['label', 'Bezeichnung'], ['help', 'Hilfetext'], ['error', 'Fehlerhinweis']];
+  function render() {
+    document.getElementById('vsw').innerHTML = Object.entries(V).map(([k, v]) => '<button data-v="' + k + '" class="' + (k === cur ? 'on' : '') + '"><span class="dot" style="background:' + v.dot + '"></span>' + v.name + '</button>').join('');
+    const v = V[cur];
+    document.getElementById('colors').innerHTML = ROWS.map(([k, l]) => '<tr><td class="k">' + l + '</td><td><span class="cv"><input type="color" data-k="' + k + '" value="' + (v[k] || '#ffffff').slice(0, 7) + '">' + (v[k] || '<span class="ph">– wie der Text</span>') + '</span></td></tr>').join('');
+    const blk = document.getElementById('block'), f = document.getElementById('form');
+    blk.style.background = v.section; blk.style.color = v.label || v.text;
+    f.style.setProperty('--bg', v.bg); f.style.setProperty('--border', v.border); f.style.setProperty('--focus', v.focus); f.style.setProperty('--radius', '6px');
+    const b = document.getElementById('btn'); b.style.background = v.btn[0]; b.style.color = v.btn[1];
+    document.getElementById('vname').innerHTML = '<span class="dot" style="background:' + v.dot + '"></span> ' + v.name + ' ⌄';
+  }
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (b) { cur = b.dataset.v; render(); } });
+  document.addEventListener('input', (e) => { if (e.target.dataset.k) { V[cur][e.target.dataset.k] = e.target.value.toUpperCase(); render(); } });
+  render();
+</script>
+</body>
+</html>

@@ -8,6 +8,59 @@
 	"values": {
 		"items": {
 			"vars": {
+				"field-font-size": {
+					"label": "formwizard.field-font-size",
+					"default": "1rem",
+					"lg": "1rem",
+					"xl": "1rem",
+					"unit": "rem",
+					"step": 0.05,
+					"min": 0.5,
+					"max": 3
+				},
+				"field-label-size": {
+					"label": "formwizard.field-label-size",
+					"default": "0.875rem",
+					"lg": "0.875rem",
+					"xl": "0.875rem",
+					"unit": "rem",
+					"step": 0.05,
+					"min": 0.5,
+					"max": 3
+				},
+				"info-font-size": {
+					"label": "formwizard.info-font-size",
+					"default": "1.125rem",
+					"lg": "1.125rem",
+					"xl": "1.125rem",
+					"unit": "rem",
+					"step": 0.05,
+					"min": 0.5,
+					"max": 4
+				},
+				"info-font-weight": {
+					"label": "formwizard.info-font-weight",
+					"value": "400",
+					"unit": "",
+					"options": ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+					"font": "heading"
+				},
+				"info-spacing-top": {
+					"label": "formwizard.info-spacing-top",
+					"value": "0.5rem",
+					"unit": "rem",
+					"step": 0.1,
+					"min": 0,
+					"max": 6
+				},
+				"info-text-gap": {
+					"label": "formwizard.info-text-gap",
+					"value": "0.375rem",
+					"unit": "rem",
+					"step": 0.05,
+					"min": 0,
+					"max": 3
+				},
 				"field-gap": {
 					"label": "formwizard.field-gap",
 					"value": "1rem",
@@ -15,6 +68,14 @@
 					"step": 0.1,
 					"min": 0,
 					"max": 4
+				},
+				"field-column-gap": {
+					"label": "formwizard.field-column-gap",
+					"value": "1.5rem",
+					"unit": "rem",
+					"step": 0.1,
+					"min": 0,
+					"max": 6
 				},
 				"field-padding": {
 					"label": "formwizard.field-padding",
@@ -96,11 +157,47 @@
 					"variant2": "#16171A",
 					"variant3": "#16171A"
 				},
+				"field-placeholder": {
+					"default": "#9CA3AF",
+					"variant": "#9CA3AF",
+					"variant2": "#9CA3AF",
+					"variant3": "#9CA3AF"
+				},
 				"field-focus": {
 					"default": "#2563EB",
 					"variant": "#2563EB",
 					"variant2": "#FFFFFF",
 					"variant3": "#FFFFFF"
+				},
+				"info-heading": {
+					"default": "#16171A",
+					"variant": "#16171A",
+					"variant2": "#FFFFFF",
+					"variant3": "#FFFFFF"
+				},
+				"info-text": {
+					"default": "#6B7280",
+					"variant": "#6B7280",
+					"variant2": "#FFFFFFBF",
+					"variant3": "#FFFFFFBF"
+				},
+				"field-label": {
+					"default": "#16171A",
+					"variant": "#16171A",
+					"variant2": "#FFFFFF",
+					"variant3": "#FFFFFF"
+				},
+				"field-help": {
+					"default": "#6B7280",
+					"variant": "#6B7280",
+					"variant2": "#FFFFFFBF",
+					"variant3": "#FFFFFFBF"
+				},
+				"field-error": {
+					"default": "#C1121F",
+					"variant": "#C1121F",
+					"variant2": "#C1121F",
+					"variant3": "#C1121F"
 				}
 			}
 		}

@@ -6,7 +6,7 @@ use Kirby\Toolkit\V;
 
 /**
  * What happens after sending, in this order: the mail to the team (to the
- * recipients of the form, else the project's – or by a choice in the form),
+ * recipients of the form – none: no mail),
  * the confirmation to the sender, the webhook. Each writes a line into the
  * submission's log; the mails go through the Project Wizard's mail server
  * (pwMail).
@@ -19,11 +19,13 @@ class fwActions
 	 */
 	public static function run(Page $form, Page $page, array $submission): array
 	{
+		// (the project's recipient taken over into older forms first)
+		fwForms::adoptDefaultRecipient();
 		$c   = $form->content();
 		$log = [];
 		$submission['team'] = null;
 
-		if ($c->get('mailTeam')->isEmpty() || $c->get('mailTeam')->toBool()) {
+		if ($form->fwMails()) {
 			[$ok, $text] = self::team($form, $page, $submission);
 			$submission['team'] = $ok;
 			$log[] = ['ok' => $ok, 'text' => $text, 'time' => date('c')];
@@ -32,7 +34,7 @@ class fwActions
 			[$ok, $text] = self::confirm($form, $submission);
 			if ($text !== null) $log[] = ['ok' => $ok, 'text' => $text, 'time' => date('c')];
 		}
-		if ($c->get('webhook')->toBool() && $c->get('webhookUrl')->isNotEmpty()) {
+		if ($form->fwWebhook() && $c->get('webhookUrl')->isNotEmpty()) {
 			[$ok, $text] = self::webhook($form, $page, $submission);
 			$log[] = ['ok' => $ok, 'text' => $text, 'time' => date('c')];
 		}
@@ -43,23 +45,10 @@ class fwActions
 
 	/* -------------- The mail to the team --------------*/
 
-	/** Who gets it: the routes that match, else the form's recipients, else the project's */
-	public static function recipients(Page $form, array $submission): array
+	/** Who gets it: the form's recipients (none: nobody) */
+	public static function recipients(Page $form, array $submission = []): array
 	{
-		$values = array_column($submission['fields'], 'value', 'key');
-		$byId   = [];
-		foreach (fwRender::fields($form) as $field) $byId[$field['id']] = $field['key'];
-
-		$to = [];
-		foreach ($form->content()->get('routes')->toStructure() as $route) {
-			[$id, $value] = array_pad(explode(':', (string) $route->content()->get('when')->value(), 2), 2, '');
-			$given = $values[$byId[$id] ?? ''] ?? null;
-			$match = is_array($given) ? in_array($value, $given, true) : $given === $value;
-			if ($match) $to = array_merge($to, self::addresses((string) $route->content()->get('to')->value()));
-		}
-		if ($to === []) $to = self::addresses((string) $form->content()->get('recipients')->value());
-		if ($to === [] && class_exists('pwMail')) $to = pwMail::recipient();
-		return array_values(array_unique($to));
+		return array_values(array_unique(self::addresses((string) $form->content()->get('recipients')->value())));
 	}
 
 	private static function team(Page $form, Page $page, array $submission): array
@@ -81,10 +70,11 @@ class fwActions
 			. '<p style="font:12px/1.5 sans-serif;color:#666;margin:16px 0 0"><a href="' . esc($page->url(), 'attr') . '">' . esc($page->url()) . '</a>'
 			. ($panel ? ' · <a href="' . htmlspecialchars($panel) . '">' . esc(t('formwizard.mail.panel')) . '</a>' : '') . '</p>';
 
-		// the uploads as attachments (if the form says so)
-		$attach = in_array(fwUploads::mode($form, $submission['stored'] ?? true), ['attach', 'both'], true)
-			? array_values(array_filter(array_column($submission['files'] ?? [], 'path'), 'is_file'))
-			: [];
+		// the uploads as attachments: those of the fields that say so (all, if not stored)
+		$attach = [];
+		foreach ($submission['files'] ?? [] as $file) {
+			if (is_file($file['path'] ?? '') && $form->fwAttaches($file['field'], (bool) ($file['stored'] ?? true))) $attach[] = $file['path'];
+		}
 
 		return self::mail(array_filter([
 			'to'          => $to,
@@ -177,7 +167,7 @@ class fwActions
 	}
 
 	/** "a@x.de, b@x.de" → the valid addresses */
-	private static function addresses(string $list): array
+	public static function addresses(string $list): array
 	{
 		return array_values(array_filter(array_map('trim', preg_split('/[,;\s]+/', $list)), fn ($a) => V::email($a)));
 	}

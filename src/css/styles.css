@@ -1,29 +1,55 @@
 /* DO NOT MODIFY THIS FILE - Override in site/patches/css/kirby-formwizard/_styles.css */
 
-/* Field colours per theme (Project Wizard → Form › Design) */
+/* Field colours per theme (Project Wizard → Form › Design) – label and help
+   empty: the section's text (the help a little paler), the placeholder
+   empty: the input's text, paler */
 section[data-block="form"] {
 	--pw-fw-background: var(--pwform-field-background);
 	--pw-fw-border: var(--pwform-field-border);
 	--pw-fw-text: var(--pwform-field-text);
+	--pw-fw-placeholder: var(--pwform-field-placeholder, color-mix(in srgb, var(--pw-fw-text) 55%, transparent));
 	--pw-fw-focus: var(--pwform-field-focus);
+	--pw-fw-label: var(--pwform-field-label, currentColor);
+	--pw-fw-help: var(--pwform-field-help, color-mix(in srgb, currentColor 75%, transparent));
+	--pw-fw-info-heading: var(--pwform-info-heading, var(--pw-fw-label));
+	--pw-fw-info-text: var(--pwform-info-text, var(--pw-fw-help));
+	--pw-fw-error: var(--pwform-field-error);
 }
 section[data-block="form"][data-style="variant"] {
 	--pw-fw-background: var(--pwform-field-background-variant);
 	--pw-fw-border: var(--pwform-field-border-variant);
 	--pw-fw-text: var(--pwform-field-text-variant);
+	--pw-fw-placeholder: var(--pwform-field-placeholder-variant, color-mix(in srgb, var(--pw-fw-text) 55%, transparent));
 	--pw-fw-focus: var(--pwform-field-focus-variant);
+	--pw-fw-label: var(--pwform-field-label-variant, currentColor);
+	--pw-fw-help: var(--pwform-field-help-variant, color-mix(in srgb, currentColor 75%, transparent));
+	--pw-fw-info-heading: var(--pwform-info-heading-variant, var(--pw-fw-label));
+	--pw-fw-info-text: var(--pwform-info-text-variant, var(--pw-fw-help));
+	--pw-fw-error: var(--pwform-field-error-variant);
 }
 section[data-block="form"][data-style="variant2"] {
 	--pw-fw-background: var(--pwform-field-background-variant2);
 	--pw-fw-border: var(--pwform-field-border-variant2);
 	--pw-fw-text: var(--pwform-field-text-variant2);
+	--pw-fw-placeholder: var(--pwform-field-placeholder-variant2, color-mix(in srgb, var(--pw-fw-text) 55%, transparent));
 	--pw-fw-focus: var(--pwform-field-focus-variant2);
+	--pw-fw-label: var(--pwform-field-label-variant2, currentColor);
+	--pw-fw-help: var(--pwform-field-help-variant2, color-mix(in srgb, currentColor 75%, transparent));
+	--pw-fw-info-heading: var(--pwform-info-heading-variant2, var(--pw-fw-label));
+	--pw-fw-info-text: var(--pwform-info-text-variant2, var(--pw-fw-help));
+	--pw-fw-error: var(--pwform-field-error-variant2);
 }
 section[data-block="form"][data-style="variant3"] {
 	--pw-fw-background: var(--pwform-field-background-variant3);
 	--pw-fw-border: var(--pwform-field-border-variant3);
 	--pw-fw-text: var(--pwform-field-text-variant3);
+	--pw-fw-placeholder: var(--pwform-field-placeholder-variant3, color-mix(in srgb, var(--pw-fw-text) 55%, transparent));
 	--pw-fw-focus: var(--pwform-field-focus-variant3);
+	--pw-fw-label: var(--pwform-field-label-variant3, currentColor);
+	--pw-fw-help: var(--pwform-field-help-variant3, color-mix(in srgb, currentColor 75%, transparent));
+	--pw-fw-info-heading: var(--pwform-info-heading-variant3, var(--pw-fw-label));
+	--pw-fw-info-text: var(--pwform-info-text-variant3, var(--pw-fw-help));
+	--pw-fw-error: var(--pwform-field-error-variant3);
 }
 
 section[data-block="form"] {
@@ -35,19 +61,33 @@ section[data-block="form"] {
 	/* -------------- the form: two columns, a full field over both --------------*/
 	form[data-formwizard] {
 		display: grid;
+		/* the labels, texts beside boxes, headings in the form */
+		color: var(--pw-fw-label);
 		grid-template-columns: minmax(0, 1fr);
 		gap: var(--pwform-field-gap, 1rem);
 		margin: 0;
 	}
+	/* tablets: two columns – the narrower widths half, so they stay
+	   readable; from 1024 px the widths as set (twelve columns) */
 	@media (min-width: 768px) {
 		form[data-formwizard] {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			column-gap: calc(var(--pwform-field-gap, 1rem) * 1.5);
+			grid-template-columns: repeat(12, minmax(0, 1fr));
+			column-gap: var(--pwform-field-column-gap, 1.5rem);
+		}
+		[data-formwizard-field] {
+			grid-column: span 6;
 		}
 		[data-formwizard-field][data-width="full"],
-		[data-formwizard-submit] {
+		[data-formwizard-submit],
+		form[data-formwizard] > :not([data-formwizard-field]) {
 			grid-column: 1 / -1;
 		}
+	}
+	@media (min-width: 1024px) {
+		[data-formwizard-field][data-width="1/4"] { grid-column: span 3; }
+		[data-formwizard-field][data-width="1/3"] { grid-column: span 4; }
+		[data-formwizard-field][data-width="2/3"] { grid-column: span 8; }
+		[data-formwizard-field][data-width="3/4"] { grid-column: span 9; }
 	}
 
 	[data-formwizard-field] {
@@ -61,10 +101,29 @@ section[data-block="form"] {
 			display: none;
 		}
 
+		/* a dropdown: as the other fields in every browser (Safari ignores
+		   the padding of its own one) – the arrow drawn in the input's colour */
+		select {
+			appearance: none;
+			-webkit-appearance: none;
+			line-height: normal;
+			padding-right: calc(var(--pwform-field-padding, 0.75rem) + 1.5em);
+			/* (a chevron: two strokes) */
+			background-image:
+				linear-gradient(45deg, transparent calc(50% - 1px), var(--pw-fw-text) calc(50% - 1px), var(--pw-fw-text) calc(50% + 1px), transparent calc(50% + 1px)),
+				linear-gradient(-45deg, transparent calc(50% - 1px), var(--pw-fw-text) calc(50% - 1px), var(--pw-fw-text) calc(50% + 1px), transparent calc(50% + 1px));
+			background-position:
+				calc(100% - var(--pwform-field-padding, 0.75rem) - 0.4em) calc(50% + 0.1em),
+				calc(100% - var(--pwform-field-padding, 0.75rem) - 0.05em) calc(50% + 0.1em);
+			background-size: 0.36em 0.36em;
+			background-repeat: no-repeat;
+			cursor: pointer;
+		}
+
 		> label,
 		legend {
 			font-weight: 600;
-			font-size: 0.875em;
+			font-size: var(--pwform-field-label-size, 0.875rem);
 		}
 		input:not([type="checkbox"], [type="radio"], [type="file"]),
 		textarea,
@@ -72,6 +131,7 @@ section[data-block="form"] {
 			width: 100%;
 			box-sizing: border-box;
 			font: inherit;
+			font-size: var(--pwform-field-font-size, 1rem);
 			color: var(--pw-fw-text);
 			background-color: var(--pw-fw-background);
 			border: var(--pwform-field-border-width, 1px) solid var(--pw-fw-border);
@@ -80,6 +140,10 @@ section[data-block="form"] {
 			outline: none;
 			transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
+			&::placeholder {
+				color: var(--pw-fw-placeholder);
+				opacity: 1;
+			}
 			&:focus {
 				border-color: var(--pw-fw-focus);
 				box-shadow: 0 0 0 3px color-mix(in srgb, var(--pw-fw-focus) 25%, transparent);
@@ -89,13 +153,56 @@ section[data-block="form"] {
 			min-height: 9rem;
 			resize: vertical;
 		}
+		/* boxes and dots: drawn as the fields (their background, border,
+		   corners) – ticked: the border in the focus colour, the tick in the
+		   input's colour (readable on every variant's background) */
 		input[type="checkbox"],
 		input[type="radio"] {
-			width: 1.05em;
-			height: 1.05em;
-			margin: 0.2em 0 0;
-			accent-color: var(--pw-fw-focus);
+			appearance: none;
+			-webkit-appearance: none;
+			display: inline-grid;
+			place-content: center;
+			box-sizing: border-box;
+			width: 1.25em;
+			height: 1.25em;
+			margin: 0.075em 0 0;
 			flex-shrink: 0;
+			background-color: var(--pw-fw-background);
+			border: var(--pwform-field-border-width, 1px) solid var(--pw-fw-border);
+			border-radius: min(var(--pwform-field-radius, 0.375rem), 0.3em);
+			cursor: pointer;
+			transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+			&::before {
+				content: "";
+				width: 0.7em;
+				height: 0.7em;
+				background: var(--pw-fw-text);
+				clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+				transform: scale(0);
+				transition: transform 0.12s ease;
+			}
+			&:checked {
+				border-color: var(--pw-fw-focus);
+			}
+			&:checked::before {
+				transform: scale(1);
+			}
+			&:focus-visible {
+				outline: none;
+				border-color: var(--pw-fw-focus);
+				box-shadow: 0 0 0 3px color-mix(in srgb, var(--pw-fw-focus) 25%, transparent);
+			}
+		}
+		input[type="radio"] {
+			border-radius: 50%;
+
+			&::before {
+				width: 0.55em;
+				height: 0.55em;
+				border-radius: 50%;
+				clip-path: none;
+			}
 		}
 	}
 
@@ -111,16 +218,22 @@ section[data-block="form"] {
 			margin-bottom: 0.5rem;
 		}
 	}
+	/* the options: at least as high as an input, centred in it – beside
+	   an input field they sit at its middle */
 	[data-formwizard-options] {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem 1.25rem;
+		align-items: center;
+		align-content: center;
+		min-height: calc(var(--pwform-field-font-size, 1rem) * 1.5 + 2 * var(--pwform-field-padding, 0.75rem) + 2 * var(--pwform-field-border-width, 1px));
 
 		label {
 			display: flex;
 			gap: 0.5rem;
-			align-items: flex-start;
+			align-items: center;
 			cursor: pointer;
+			font-size: var(--pwform-field-font-size, 1rem);
 		}
 	}
 
@@ -134,22 +247,37 @@ section[data-block="form"] {
 		background-color: var(--pw-fw-background);
 		color: var(--pw-fw-text);
 	}
+	/* (help, limits and errors a little smaller than the labels) */
 	[data-formwizard-limits],
 	[data-formwizard-help] {
-		font-size: 0.8125em;
-		opacity: 0.75;
+		font-size: calc(var(--pwform-field-label-size, 0.875rem) * 0.9286);
+		color: var(--pw-fw-help);
+	}
+
+	/* phones: the fields' text never below 16 px – smaller, iPhone and iPad
+	   zoom into the field when it is tapped */
+	@media (max-width: 767px) {
+		[data-formwizard-field] :is(input:not([type="checkbox"], [type="radio"], [type="file"]), textarea, select) {
+			font-size: max(16px, var(--pwform-field-font-size, 1rem));
+		}
 	}
 
 	/* a heading in the form */
+	/* a subheading (Project Wizard → Form › Design: its size, weight,
+	   spacing, colours) and its text */
 	[data-formwizard-field][data-type="info"] {
-		padding-top: 0.5rem;
+		padding-top: var(--pwform-info-spacing-top, 0.5rem);
+		gap: var(--pwform-info-text-gap, 0.375rem);
 
 		h3 {
 			margin: 0;
-			font-size: 1.125em;
+			font-size: var(--pwform-info-font-size, 1.125rem);
+			font-weight: var(--pwform-info-font-weight, 400);
+			color: var(--pw-fw-info-heading);
 		}
 		p {
 			margin: 0;
+			color: var(--pw-fw-info-text);
 		}
 	}
 
@@ -159,7 +287,7 @@ section[data-block="form"] {
 		grid-template-columns: auto minmax(0, 1fr);
 		column-gap: 0.625rem;
 		align-items: start;
-		font-size: 0.875em;
+		font-size: calc(var(--pwform-field-font-size, 1rem) * 0.875);
 
 		> label {
 			font-weight: normal;
@@ -175,19 +303,58 @@ section[data-block="form"] {
 	}
 
 	/* required: the asterisk, an error below the field */
+	/* (the asterisk in the labels' colour, as the name beside it) */
 	:is(label, legend) span[aria-hidden] {
-		color: var(--pw-fw-focus);
+		color: inherit;
 	}
-	[data-invalid] :is(input:not([type="checkbox"], [type="radio"]), textarea, select) {
-		border-color: #c1121f;
+	[data-invalid] :is(input:not([type="file"]), textarea, select) {
+		border-color: var(--pw-fw-error);
 	}
 	[data-formwizard-error] {
-		font-size: 0.8125em;
-		color: #c1121f;
+		font-size: calc(var(--pwform-field-label-size, 0.875rem) * 0.9286);
+		color: var(--pw-fw-error);
 	}
 
+	/* the send button: on phones the whole width, else as set (its width,
+	   its alignment) */
 	[data-formwizard-submit] {
 		margin-top: 0.25rem;
+		display: flex;
+
+		> [data-field="button"],
+		button {
+			width: 100%;
+		}
+	}
+	@media (min-width: 768px) {
+		[data-formwizard-submit][data-width="auto"] {
+			> [data-field="button"],
+			button {
+				width: auto;
+			}
+		}
+		[data-formwizard-submit][data-width="auto"][data-align="center"] {
+			justify-content: center;
+		}
+		[data-formwizard-submit][data-width="auto"][data-align="right"] {
+			justify-content: flex-end;
+		}
+	}
+
+	/* after sending, the page jumps to the form: its message (thanks,
+	   errors) below the website's fixed header, not hidden by it */
+	[id^="formwizard-"] {
+		scroll-margin-top: 1.5rem;
+	}
+	@media (min-width: 768px) {
+		body:has(#sticky) & [id^="formwizard-"] {
+			scroll-margin-top: calc(var(--nav-tablet-height-sticky, 0px) + 1.5rem);
+		}
+	}
+	@media (min-width: 1024px) {
+		body:has(#sticky) & [id^="formwizard-"] {
+			scroll-margin-top: calc(var(--nav-desktop-height-sticky, 0px) + 1.5rem);
+		}
 	}
 
 	/* the trap for bots: out of sight, not only invisible */
@@ -215,17 +382,19 @@ section[data-block="form"] {
 			text-decoration: underline;
 		}
 	}
+	/* (the thanks stands alone: in the labels' colour, readable on any section) */
 	[data-formwizard-message="sent"] {
-		background: color-mix(in srgb, #1a7f37 8%, transparent);
-		border: 1px solid color-mix(in srgb, #1a7f37 30%, transparent);
+		color: var(--pw-fw-label);
+		background: color-mix(in srgb, var(--pw-fw-label) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--pw-fw-label) 30%, transparent);
 	}
 	[data-formwizard-message="failed"],
 	[data-formwizard-message="invalid"] {
 		margin-bottom: var(--pwform-field-gap, 1rem);
-		background: color-mix(in srgb, #c1121f 8%, transparent);
-		border: 1px solid color-mix(in srgb, #c1121f 30%, transparent);
+		color: var(--pw-fw-error);
+		background: color-mix(in srgb, var(--pw-fw-error) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--pw-fw-error) 30%, transparent);
 	}
-	[data-formwizard-message="closed"],
 	[data-formwizard-message="note"] {
 		border: 1px dashed currentColor;
 		opacity: 0.8;

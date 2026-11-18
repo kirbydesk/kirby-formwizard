@@ -43,15 +43,8 @@ return array_merge([
 					'empty'    => 'formwizard.block.form.empty',
 					'help'     => 'formwizard.block.form.help',
 					'image'    => ['icon' => 'formwizard', 'back' => 'transparent'],
-					'info'     => '{{ page.fwInfo }}',
-				],
-				'successText' => [
-					'label'       => 'formwizard.block.success',
-					'type'        => 'textarea',
-					'buttons'     => ['bold', 'italic', 'link'],
-					'size'        => 'small',
-					'placeholder' => 'formwizard.block.success.placeholder',
-					'help'        => 'formwizard.block.success.help',
+					// (only the forms' names: no count, no way into subpages)
+					'subpages' => false,
 				],
 			]
 		),
@@ -89,9 +82,9 @@ return array_merge([
 		],
 		'create'  => [
 			'title'  => ['label' => 'formwizard.form.name'],
-			'status' => 'draft',
+			'status' => 'listed',
 		],
-		// draft: not offered in the blocks yet; active: offered and sends
+		// (no drafts any more: a form is offered in the blocks right away)
 		'status'  => [
 			'draft'    => ['label' => 'formwizard.status.draft', 'text' => 'formwizard.status.draft.text'],
 			'unlisted' => false,
@@ -107,7 +100,45 @@ return array_merge([
 						'type'      => 'blocks',
 						'fieldsets' => $groups,
 						'empty'     => 'formwizard.fields.empty',
-						'help'      => 'formwizard.fields.help',
+					],
+					// below the fields: the captcha, the send button (in the
+					// Project Wizard each a fixed row of the list, see Forms.vue)
+					'captcha' => [
+						'label'     => 'formwizard.captcha.form',
+						'type'      => 'toggle',
+						'default'   => true,
+						'translate' => false,
+						'text'      => ['formwizard.off', 'formwizard.on'],
+						'width'     => '1/2',
+					],
+					'buttonText' => [
+						'label'       => 'formwizard.button',
+						'type'        => 'text',
+						'placeholder' => 'formwizard.button.default',
+						'width'       => '1/2',
+					],
+					// (on phones always the whole width)
+					'buttonWidth' => [
+						'label'     => 'formwizard.field.width',
+						'type'      => 'toggles',
+						'default'   => 'auto',
+						'translate' => false,
+						'options'   => [
+							['value' => 'auto', 'text' => ['*' => 'formwizard.button.width.auto']],
+							['value' => 'full', 'text' => ['*' => 'formwizard.button.width.full']],
+						],
+					],
+					'buttonAlign' => [
+						'label'     => 'formwizard.button.align',
+						'type'      => 'toggles',
+						'default'   => 'left',
+						'translate' => false,
+						'options'   => [
+							['value' => 'left', 'text' => ['*' => 'formwizard.button.align.left']],
+							['value' => 'center', 'text' => ['*' => 'formwizard.button.align.center']],
+							['value' => 'right', 'text' => ['*' => 'formwizard.button.align.right']],
+						],
+						'when'      => ['buttonWidth' => 'auto'],
 					],
 				],
 			],
@@ -142,78 +173,21 @@ return array_merge([
 						'when'     => ['success' => 'page'],
 					],
 
-					// the mail to the team
-					'headlineTeam' => [
-						'label' => 'formwizard.team',
-						'type'  => 'headline',
-					],
-					'mailTeam' => [
-						'label'     => 'formwizard.team.send',
-						'type'      => 'toggle',
-						'default'   => true,
-						'translate' => false,
-						'text'      => ['formwizard.off', 'formwizard.on'],
-						'width'     => '1/3',
-					],
-					'recipients' => [
-						'label'       => 'formwizard.team.recipients',
-						'type'        => 'text',
-						'translate'   => false,
-						'placeholder' => 'formwizard.team.recipients.placeholder',
-						'help'        => 'formwizard.team.recipients.help',
-						'width'       => '2/3',
-						'when'        => ['mailTeam' => true],
-					],
-					'routes' => [
-						'label'     => 'formwizard.team.routes',
-						'type'      => 'structure',
-						'translate' => false,
-						'help'      => 'formwizard.team.routes.help',
-						'when'      => ['mailTeam' => true],
-						'columns'   => ['when' => ['width' => '1/2'], 'to' => ['width' => '1/2']],
-						'fields'    => [
-							'when' => [
-								'label'    => 'formwizard.team.routes.when',
-								'type'     => 'select',
-								'required' => true,
-								'options'  => ['type' => 'query', 'query' => 'page.fwConditions'],
-							],
-							'to' => [
-								'label'       => 'formwizard.team.routes.to',
-								'type'        => 'text',
-								'required'    => true,
-								'placeholder' => 'vertrieb@…',
-							],
-						],
-					],
-					'mailSubject' => [
-						'label'       => 'formwizard.team.subject',
-						'type'        => 'text',
-						'placeholder' => 'formwizard.team.subject.placeholder',
-						'help'        => 'formwizard.placeholders.help',
-						'when'        => ['mailTeam' => true],
-					],
-
-					// the confirmation to the sender
-					'headlineConfirm' => [
-						'label' => 'formwizard.confirm',
-						'type'  => 'headline',
-					],
+					// the confirmation to the sender: its name as the toggle's text
 					'confirm' => [
-						'label'     => 'formwizard.confirm.send',
+						'label'     => '',
 						'type'      => 'toggle',
 						'translate' => false,
-						'text'      => ['formwizard.off', 'formwizard.on'],
-						'help'      => 'formwizard.confirm.help',
-						'width'     => '1/3',
+						'text'      => 'formwizard.confirm',
+						'width'     => '1/2',
 					],
 					'confirmCopy' => [
-						'label'     => 'formwizard.confirm.copy',
+						'label'     => '',
 						'type'      => 'toggle',
 						'default'   => true,
 						'translate' => false,
-						'text'      => ['formwizard.off', 'formwizard.on'],
-						'width'     => '2/3',
+						'text'      => 'formwizard.confirm.copy',
+						'width'     => '1/2',
 						'when'      => ['confirm' => true],
 					],
 					'confirmSubject' => [
@@ -231,99 +205,57 @@ return array_merge([
 						'help'        => 'formwizard.placeholders.help',
 						'when'        => ['confirm' => true],
 					],
-
-					// uploaded files
-					'headlineUploads' => [
-						'label' => 'formwizard.uploads',
-						'type'  => 'headline',
-					],
-					'uploads' => [
-						'label'     => 'formwizard.uploads.mode',
-						'type'      => 'toggles',
-						'default'   => 'store',
+				],
+			],
+			// what happens with a submission: stored, mailed or both; the webhook
+			'actions' => [
+				'label'  => 'formwizard.tab.actions',
+				'icon'   => 'bolt',
+				'fields' => [
+					'action' => [
+						'label'     => 'formwizard.action',
+						'type'      => 'checkboxes',
+						'columns'   => 3,
+						'required'  => true,
+						'min'       => 1,
+						'default'   => ['store', 'mail'],
 						'translate' => false,
-						'help'      => 'formwizard.uploads.help',
 						'options'   => [
-							['value' => 'store', 'text' => ['*' => 'formwizard.uploads.store']],
-							['value' => 'attach', 'text' => ['*' => 'formwizard.uploads.attach']],
-							['value' => 'both', 'text' => ['*' => 'formwizard.uploads.both']],
+							['value' => 'store', 'text' => ['*' => 'formwizard.action.store']],
+							['value' => 'mail', 'text' => ['*' => 'formwizard.action.mail']],
+							['value' => 'webhook', 'text' => ['*' => 'formwizard.webhook']],
 						],
 					],
 
-					// a webhook (CRM, Zapier, n8n …)
+					// mailed to the team
+					'headlineMail' => [
+						'label' => 'formwizard.action.mail',
+						'type'  => 'headline',
+					],
+					'recipients' => [
+						'label'       => 'formwizard.team.recipients',
+						'type'        => 'text',
+						'translate'   => false,
+						'placeholder' => 'formwizard.team.recipients.placeholder',
+						'help'        => 'formwizard.team.recipients.help',
+					],
+					'mailSubject' => [
+						'label'       => 'formwizard.team.subject',
+						'type'        => 'text',
+						'placeholder' => 'formwizard.team.subject.placeholder',
+						'help'        => 'formwizard.placeholders.help',
+					],
+
+					// a webhook (CRM, Zapier, n8n …) – its address required when chosen (checked on saving)
 					'headlineWebhook' => [
 						'label' => 'formwizard.webhook',
 						'type'  => 'headline',
-					],
-					'webhook' => [
-						'label'     => 'formwizard.webhook.send',
-						'type'      => 'toggle',
-						'translate' => false,
-						'text'      => ['formwizard.off', 'formwizard.on'],
-						'width'     => '1/3',
 					],
 					'webhookUrl' => [
 						'label'     => 'formwizard.webhook.url',
 						'type'      => 'url',
 						'translate' => false,
-						'required'  => true,
 						'help'      => 'formwizard.webhook.help',
-						'width'     => '2/3',
-						'when'      => ['webhook' => true],
-					],
-				],
-			],
-			'settings' => [
-				'label'  => 'formwizard.tab.settings',
-				'icon'   => 'settings',
-				'fields' => [
-					'buttonText' => [
-						'label'       => 'formwizard.button',
-						'type'        => 'text',
-						'placeholder' => 'formwizard.button.default',
-						'width'       => '1/2',
-					],
-					'privacyPage' => [
-						'label'     => 'formwizard.privacy',
-						'type'      => 'pages',
-						'multiple'  => false,
-						'translate' => false,
-						'help'      => 'formwizard.privacy.help',
-						'width'     => '1/2',
-					],
-					'store' => [
-						'label'     => 'formwizard.store',
-						'type'      => 'toggle',
-						'default'   => true,
-						'translate' => false,
-						'text'      => ['formwizard.store.off', 'formwizard.store.on'],
-						'help'      => 'formwizard.store.help',
-						'width'     => '1/2',
-					],
-					'captcha' => [
-						'label'     => 'formwizard.captcha.form',
-						'type'      => 'toggle',
-						'default'   => true,
-						'translate' => false,
-						'text'      => ['formwizard.off', 'formwizard.on'],
-						'help'      => 'formwizard.captcha.form.help',
-						'width'     => '1/2',
-					],
-					'closed' => [
-						'label'     => 'formwizard.closed',
-						'type'      => 'toggle',
-						'translate' => false,
-						'text'      => ['formwizard.closed.off', 'formwizard.closed.on'],
-						'help'      => 'formwizard.closed.help',
-						'width'     => '1/2',
-					],
-					'closedText' => [
-						'label'       => 'formwizard.closed.text',
-						'type'        => 'textarea',
-						'buttons'     => ['bold', 'italic', 'link'],
-						'size'        => 'small',
-						'placeholder' => 'formwizard.closed.text.default',
-						'when'        => ['closed' => true],
 					],
 				],
 			],

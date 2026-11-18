@@ -45,6 +45,8 @@ Kirby::plugin('kirbydesk/kirby-formwizard', [
 			'component' => 'k-formwizard-pw',
 			'menu'      => 'formwizard/pw/menu',
 			'badge'     => fwSubmissions::countNew(),
+			// its settings page shows the mail server (Project Wizard's pwMail)
+			'mail'      => true,
 		],
 	],
 
@@ -52,6 +54,9 @@ Kirby::plugin('kirbydesk/kirby-formwizard', [
 	'api'          => require __DIR__ . '/src/extensions/api.php',
 	'areas'        => require __DIR__ . '/src/extensions/areas.php',
 	'blueprints'   => require __DIR__ . '/src/extensions/blueprints.php',
+	// a field's condition: a select whose choices the Panel narrows to the
+	// choice fields above it (k-fwwhen-field)
+	'fields'       => ['fwwhen' => ['extends' => 'select']],
 	'hooks'        => require __DIR__ . '/src/extensions/hooks.php',
 	'routes'       => require __DIR__ . '/src/extensions/routes.php',
 	'snippets'     => [

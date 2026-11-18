@@ -5,6 +5,7 @@ import Submissions from './views/Submissions.vue';
 import Submission from './views/Submission.vue';
 import Forms from './pw/Forms.vue';
 import FormPreview from './pw/FormPreview.vue';
+import WhenField from './components/WhenField.vue';
 
 const types = ['fwtext', 'fwemail', 'fwtel', 'fwnumber', 'fwdate', 'fwtextarea', 'fwselect', 'fwradio', 'fwcheckboxes', 'fwfile', 'fwhidden', 'fwinfo', 'fwconsent'];
 
@@ -14,6 +15,9 @@ panel.plugin('kirbydesk/kirby-formwizard', {
 		// the block: a form on a page
 		pwform,
 		...Object.fromEntries(types.map((type) => [type, { ...FieldPreview }])),
+	},
+	fields: {
+		fwwhen: WhenField,
 	},
 	components: {
 		'k-formwizard-submissions-view': Submissions,

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formular-Farben</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #2a2a2e; color: #16171a; padding: 24px 16px 60px; }
+  h1 { font-size: 18px; color: #f2f2f4; font-weight: 600; }
+  .lead { color: #a8a8ae; margin: 4px 0 14px; max-width: 1180px; }
+  .wrap { max-width: 1180px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); border-radius: 10px; overflow: hidden; }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } }
+  .panel { background: #efefef; padding: 18px 24px 28px; min-width: 0; }
+  .titlerow { display: flex; align-items: center; gap: 14px; padding-bottom: 10px; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
+  .titlerow h2 { font-size: 24px; font-weight: 500; flex: 1; }
+  .tabs { display: flex; gap: 16px; font-size: 13px; color: #6b6f76; }
+  .tabs span.on { color: #16171a; border-bottom: 2px solid #16171a; padding-bottom: 3px; }
+  .intro { color: #6b6f76; font-size: 13px; margin: 14px 0 18px; }
+  .sec { display: flex; justify-content: space-between; align-items: center; margin: 18px 0 6px; font-weight: 500; }
+  .vsw { display: inline-flex; background: #fff; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,.08); overflow: hidden; }
+  .vsw button { border: 0; background: none; font: inherit; font-size: 11px; padding: 3px 10px; cursor: pointer; display: inline-flex; gap: 5px; align-items: center; }
+  .vsw button.on { background: #000; color: #fff; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #bbb; display: inline-block; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  td { border-top: 1px solid #ececec; padding: 0; height: 37px; font-size: 13px; }
+  tr:first-child td { border-top: 0; }
+  td.k { width: 38%; padding: 0 12px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #444; background: #fafafa; border-right: 1px solid #ececec; }
+  td.v { padding: 0 12px; }
+  .cv { display: flex; align-items: center; gap: 10px; font-family: ui-monospace, Menlo, monospace; }
+  .cv input[type=color] { width: 22px; height: 22px; border: 1px solid #ddd; border-radius: 4px; padding: 0; background: none; cursor: pointer; }
+  .cv .ph { color: #9a9aa0; font-family: inherit; }
+  tr.new td { background: #fff8e8; } tr.new td.k { background: #fdf0d2; }
+  .help { color: #6b6f76; font-size: 12px; margin-top: 6px; }
+  .prev { padding: 60px 40px 40px; transition: background .2s; min-width: 0; }
+  .ptop { display: flex; justify-content: space-between; font-size: 12px; margin: -44px -24px 34px; }
+  .ptop label { display: inline-flex; gap: 6px; align-items: center; background: rgba(255,255,255,.85); color: #16171a; border-radius: 5px; padding: 3px 8px; cursor: pointer; }
+  .f { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 14px; }
+  .f .full { grid-column: 1 / -1; }
+  .lab { font-size: 13px; font-weight: 600; display: block; margin-bottom: 5px; }
+  .star { color: var(--focus); }
+  .inp { height: 42px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); }
+  .inp.ta { height: 90px; }
+  .err .inp { border-color: var(--error); }
+  .emsg { color: var(--error); font-size: 12.5px; margin-top: 4px; display: none; }
+  .err .emsg { display: block; }
+  .hint { color: var(--helpc); font-size: 12.5px; margin-top: 4px; }
+  .chk { display: flex; gap: 8px; font-size: 12.5px; align-items: flex-start; }
+  .chk i { width: 14px; height: 14px; border: 1px solid var(--border); background: var(--bg); border-radius: 3px; flex: none; margin-top: 2px; }
+  .btn { margin-top: 18px; display: inline-block; padding: 12px 24px; border-radius: 999px; font-weight: 700; }
+  .msg { margin-bottom: 16px; padding: 10px 12px; border-radius: 6px; font-size: 13px; display: none; border: 1px solid color-mix(in srgb, var(--error) 40%, transparent); background: color-mix(in srgb, var(--error) 10%, transparent); color: var(--error); }
+  .showerr .msg { display: block; }
+  .new-o { outline: 2px dashed #ff9f0a; outline-offset: 2px; border-radius: 3px; }
+  .notes { max-width: 1180px; color: #ff9f0a; font-size: 12.5px; margin-top: 12px; }
+  .notes p + p { margin-top: 6px; }
+</style>
+</head>
+<body>
+<h1>Blöcke › Formular › Gestaltung – drei Farben mehr je Variante</h1>
+<p class="lead">Variante umschalten (Standard hell, Variante rot, Variante 2 dunkel), Farben anklicken und ändern, rechts „Fehler zeigen“. Neue Zeilen gelb hinterlegt; Erläuterungen in Orange gehören nicht zum Plugin.</p>
+<div class="wrap">
+  <div class="panel">
+    <div class="titlerow"><h2>📋 Formular</h2><div class="tabs"><span class="on">Gestaltung</span><span>Elemente</span><span>Startwerte</span><span>Sichtbarkeit</span></div></div>
+    <p class="intro">Diese Werte gelten für alle Blöcke dieser Art, auch für bereits angelegte Blöcke.</p>
+    <div class="sec">Felder</div>
+    <table><tr><td class="k">Innenabstand</td><td class="v">0.75 rem</td></tr><tr><td class="k">Ecken</td><td class="v">0.375 rem</td></tr><tr><td class="k">Rahmenstärke</td><td class="v">1.0 px</td></tr></table>
+    <div class="sec">Farben <span class="vsw" id="vsw"></span></div>
+    <table id="colors"></table>
+    <p class="help">Die Farben des Formulars für jede Variante. Fokus: der Rahmen des Feldes, in dem man gerade schreibt, und die Sternchen der Pflichtfelder. Fehlerhinweis: „Bitte ausfüllen“, der Rahmen falsch ausgefüllter Felder und die Meldung, wenn das Senden fehlschlägt.</p>
+    <div class="sec">Abstände</div>
+    <table><tr><td class="k">Abstand zwischen Feldern</td><td class="v">1.0 rem</td></tr><tr><td class="k">Abstand zur Einleitung</td><td class="v">1.5 rem</td></tr></table>
+  </div>
+  <div class="prev" id="prev">
+    <div class="ptop"><span></span><label><input type="checkbox" id="showerr" checked> Fehler zeigen</label></div>
+    <div id="form">
+      <div class="msg">Die Nachricht konnte nicht gesendet werden. Bitte versuche es später noch einmal.</div>
+      <div class="f">
+        <div class="fld err"><span class="lab">Name <span class="star">*</span></span><div class="inp"></div><div class="emsg">Bitte ausfüllen.</div></div>
+        <div class="fld err"><span class="lab">E-Mail <span class="star">*</span></span><div class="inp"></div><div class="emsg">Bitte eine gültige E-Mail-Adresse eingeben.</div></div>
+        <div class="fld full"><span class="lab">Telefon</span><div class="inp"></div><div class="hint">Für Rückfragen – freiwillig.</div></div>
+        <div class="fld full err"><span class="lab">Nachricht <span class="star">*</span></span><div class="inp ta"></div><div class="emsg">Bitte ausfüllen.</div></div>
+        <div class="fld full err"><div class="chk"><i></i><span>Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage verarbeitet werden. <span class="star">*</span></span></div><div class="emsg">Bitte bestätigen.</div></div>
+      </div>
+      <span class="btn" id="btn">Absenden</span>
+    </div>
+  </div>
+</div>
+<div class="notes">
+  <p><b>Neu je Variante:</b> „Bezeichnung“ (Feldnamen und Texte neben Kästchen), „Hilfetext“ (der kleine Text unter einem Feld) und „Fehlerhinweis“. Bezeichnung und Hilfetext leer = wie bisher: die Textfarbe des Abschnitts, der Hilfetext etwas blasser. Fehlerhinweis startet überall mit dem heutigen Rot – bestehende Formulare sehen unverändert aus.</p>
+  <p><b>Beispiel rote Website:</b> Variante „rot“ mit Fehlerhinweis Hellgelb – „Bitte ausfüllen“ bleibt lesbar.</p>
+  <p><b>Offen:</b> die Meldung „Gesendet“ ist heute fest grün. Vorschlag: sie nimmt die Farbe „Bezeichnung“ mit leicht getöntem Hintergrund – dann passt sie auf jedem Abschnitt ohne vierte Farbe.</p>
+</div>
+<script>
+  const V = {
+    default:  { name: 'Standard',   dot: '#fff',    section: '#FFFFFF', text: '#16171A', bg: '#FAFAFA', border: '#D4D4D8', ftext: '#16171A', focus: '#2563EB', label: '', help: '', error: '#C1121F', btn: ['#000', '#fff'] },
+    variant:  { name: 'Variante',   dot: '#e00',    section: '#C8102E', text: '#FFFFFF', bg: '#FFFFFF', border: '#FFFFFF', ftext: '#16171A', focus: '#FFFFFF', label: '', help: '', error: '#FFE066', btn: ['#fff', '#C8102E'] },
+    variant2: { name: 'Variante 2', dot: '#222',    section: '#16171A', text: '#FFFFFF', bg: '#FFFFFF', border: '#FFFFFF40', ftext: '#16171A', focus: '#FFFFFF', label: '', help: '', error: '#FF8A8A', btn: ['#fff', '#000'] }
+  };
+  let cur = 'variant';
+  const ROWS = [['bg', 'Hintergrundfarbe'], ['border', 'Rahmen'], ['ftext', 'Text'], ['focus', 'Fokus'], ['label', 'Bezeichnung', 'wie der Text des Abschnitts', 1], ['help', 'Hilfetext', 'wie Bezeichnung, etwas blasser', 1], ['error', 'Fehlerhinweis', '', 1]];
+  function render() {
+    document.getElementById('vsw').innerHTML = Object.entries(V).map(([k, v]) => '<button data-v="' + k + '" class="' + (k === cur ? 'on' : '') + '"><span class="dot" style="background:' + v.dot + '"></span>' + v.name + '</button>').join('');
+    const v = V[cur];
+    document.getElementById('colors').innerHTML = ROWS.map(([k, l, ph, isNew]) => '<tr class="' + (isNew ? 'new' : '') + '"><td class="k">' + l + '</td><td class="v"><span class="cv"><input type="color" data-k="' + k + '" value="' + (v[k] || '#ffffff').slice(0, 7) + '">' + (v[k] ? v[k] : '<span class="ph">– ' + ph + '</span>') + '</span></td></tr>').join('');
+    const pr = document.getElementById('prev'), f = document.getElementById('form');
+    const label = v.label || v.text;
+    pr.style.background = v.section; pr.style.color = label;
+    f.style.setProperty('--bg', v.bg); f.style.setProperty('--border', v.border); f.style.setProperty('--focus', v.focus); f.style.setProperty('--error', v.error);
+    f.style.setProperty('--helpc', v.help || 'color-mix(in srgb, ' + label + ' 75%, transparent)');
+    const b = document.getElementById('btn'); b.style.background = v.btn[0]; b.style.color = v.btn[1];
+    f.classList.toggle('showerr', document.getElementById('showerr').checked);
+    f.querySelectorAll('.fld').forEach((el) => {});
+    document.querySelectorAll('#form .err').forEach((el) => el.classList.toggle('off', !document.getElementById('showerr').checked));
+  }
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (b) { cur = b.dataset.v; render(); } });
+  document.addEventListener('input', (e) => { if (e.target.dataset.k) { V[cur][e.target.dataset.k] = e.target.value.toUpperCase(); render(); } });
+  document.getElementById('showerr').addEventListener('change', () => { document.querySelectorAll('#form .fld').forEach((el) => { if (el.querySelector('.emsg')) el.classList.toggle('err', document.getElementById('showerr').checked); }); render(); });
+  render();
+</script>
+</body>
+</html>

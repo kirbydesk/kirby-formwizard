@@ -40,13 +40,9 @@ if ($form === null):
 	endif;
 
 elseif ($status === 'sent'):
-	// instead of the form: the thanks of the block, else of the form
-	$text = $block->content()->get('successText')->or($form->content()->get('successText'))->or(t('formwizard.success.text.default'))->value();
+	// instead of the form: its thanks (Project Wizard › Forms › Response)
+	$text = $form->content()->get('successText')->or(t('formwizard.success.text.default'))->value();
 	echo '<div data-formwizard-message="sent" role="status">' . kirbytext(fwRender::fill(esc($text), $result['values'] ?? [])) . '</div>' . "\n";
-
-elseif ($status === 'closed' || $form->content()->get('closed')->toBool()):
-	$text = $form->content()->get('closedText')->or(t('formwizard.closed.text.default'))->value();
-	echo '<div data-formwizard-message="closed">' . kirbytext(esc($text)) . '</div>' . "\n";
 
 else:
 	if ($status === 'failed'):

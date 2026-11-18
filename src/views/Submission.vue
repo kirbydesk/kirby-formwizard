@@ -5,7 +5,7 @@
 		<k-header>
 			{{ submission.title }}
 			<template #buttons>
-				<k-button icon="angle-left" variant="filled" size="sm" link="formwizard/submissions" :text="$t('formwizard.submissions')" />
+				<k-button icon="angle-left" variant="filled" size="sm" :link="backLink" :text="back ? back.text : $t('formwizard.submissions')" />
 				<k-button
 					:icon="submission.status === 'new' ? 'check' : 'refresh'"
 					variant="filled"
@@ -70,7 +70,14 @@
 export default {
 	props: {
 		submission: { type: Object, required: true },
-		formLink: { type: String, default: null }
+		formLink: { type: String, default: null },
+		// its form's list
+		back: { type: Object, default: null }
+	},
+	computed: {
+		backLink() {
+			return this.back ? this.back.link : 'formwizard/submissions';
+		}
 	},
 	methods: {
 		async toggle() {
@@ -78,7 +85,7 @@ export default {
 			await this.$api.post('formwizard/submissions/' + this.submission.id + '/status', { status });
 			// done: back to the list (the next one waits there)
 			if (status === 'done') {
-				this.$go('formwizard/submissions');
+				this.$go(this.backLink);
 			} else {
 				this.$panel.view.reload();
 			}
@@ -93,7 +100,7 @@ export default {
 					await this.$api.delete('formwizard/submissions/' + this.submission.id);
 					this.$panel.dialog.close();
 					this.$panel.notification.success();
-					this.$go('formwizard/submissions');
+					this.$go(this.backLink);
 				}
 			);
 		}

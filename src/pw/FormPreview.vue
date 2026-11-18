@@ -2,13 +2,12 @@
 	<!-- the form as the website shows it, from the editor's values: its
 	     fields in their order and widths (conditional ones faded) -->
 	<div class="fw-preview">
-		<p class="fw-preview-head">{{ $t('formwizard.preview.website') }}</p>
 		<!-- in the project's look (the block's preview of the Project Wizard) -->
-		<pw-block-panel-preview v-if="designed" type="pwform" :content="{ _fwfields: fields, _fwbutton: button }" />
+		<pw-block-panel-preview v-if="designed" type="pwform" :content="{ _fwfields: fields, _fwbutton: button, _fwbuttonlayout: buttonLayout }" switches />
 		<div v-else class="fw-preview-card">
 			<p v-if="!fields.length" class="fw-block-note">{{ $t('formwizard.fields.empty') }}</p>
 			<div class="fw-block-fields">
-				<div v-for="field in fields" :key="field.id" class="fw-block-field" :class="{ 'is-full': field.width === 'full', 'is-info': field.type === 'fwinfo', 'is-when': field.when }">
+				<div v-for="field in fields" :key="field.id" class="fw-block-field" :data-width="field.width" :class="{ 'is-info': field.type === 'fwinfo', 'is-when': field.when }">
 					<template v-if="field.type === 'fwinfo'">
 						<strong>{{ field.label }}</strong>
 						<span v-if="field.text" class="fw-preview-text">{{ field.text }}</span>
@@ -39,7 +38,32 @@ export default {
 	props: {
 		blocks: { type: Array, default: () => [] },
 		button: { type: String, default: '' },
+		// the send button: [auto|full, left|center|right]
+		buttonLayout: { type: Array, default: () => ['auto', 'left'] },
+		// the upload fields' types and PHP's limit (MB), for their line
+		uploads: { type: Object, default: null },
 		title: { type: String, default: '' }
+	},
+	methods: {
+		// an upload field's line as on the website: "PDF, DOC … · max. 10 MB"
+		limits(c) {
+			if (!this.uploads) return '';
+			const groups = this.uploads.groups || {};
+			const raw = Array.isArray(c.accept) ? c.accept : String(c.accept || '').split(',').map((g) => g.trim());
+			let chosen = raw.filter((g) => groups[g]);
+			if (!chosen.length) chosen = Object.keys(groups);
+			const ext = [...new Set(chosen.flatMap((g) => groups[g]))];
+			const mb = Math.min(Number(c.maxsize) || 10, Number(this.uploads.phpLimit) || Infinity);
+			return ext.join(', ') + ' · ' + this.$t('formwizard.upload.max', { size: String(Math.round(mb * 10) / 10) + ' MB' });
+		},
+		// a consent's text as on the website: its own, else the standard
+		// one (with the privacy page: its link's words)
+		consentText(c) {
+			const own = String(c.text || '').replace(/<[^>]+>/g, '').trim();
+			if (own) return own;
+			const privacy = Array.isArray(c.privacy) ? c.privacy.length : !!c.privacy;
+			return privacy ? this.$t('formwizard.consent.link', { link: this.$t('formwizard.consent.privacy') }) : this.$t('formwizard.consent.default');
+		}
 	},
 	computed: {
 		designed() {
@@ -55,9 +79,14 @@ export default {
 						type: b.type,
 						label: c.label || this.$t('formwizard.type.' + b.type),
 						// (the text without its formatting marks)
-						text: (c.text || '').replace(/[*_#]+/g, '').replace(/\(link:\s*\S+\s+text:\s*([^)]+)\)/g, '$1'),
+						text: b.type === 'fwconsent' ? this.consentText(c) : (c.text || '').replace(/[*_#]+/g, '').replace(/\(link:\s*\S+\s+text:\s*([^)]+)\)/g, '$1'),
 						help: c.help || '',
-						placeholder: c.placeholder || '',
+						limits: b.type === 'fwfile' ? this.limits(c) : '',
+						// (a dropdown: its first entry as on the website)
+						placeholder: c.placeholder || (b.type === 'fwselect' ? this.$t('formwizard.field.placeholder.select') : ''),
+						select: b.type === 'fwselect',
+						// (clicked in the preview: its first entry chosen)
+						choice: b.type === 'fwselect' ? ((Array.isArray(c.options) ? c.options : []).map((o) => o.text).filter(Boolean)[0] || '') : '',
 						required: c.required === true || c.required === 'true',
 						width: c.width || (WIDE.includes(b.type) ? 'full' : 'half'),
 						options: ['fwradio', 'fwcheckboxes'].includes(b.type) ? (Array.isArray(c.options) ? c.options : []).map((o) => o.text).filter(Boolean) : [],
@@ -70,14 +99,13 @@ export default {
 </script>
 
 <style>
+/* the whole column's width, as the other previews of the wizard: no
+   padding of its own (the block keeps its own, its background shows) */
 .fw-preview {
-	padding: var(--spacing-3);
+	padding: 0;
 }
-.fw-preview-head {
-	font-family: var(--font-mono);
-	font-size: var(--text-xs);
-	color: var(--color-gray-600);
-	margin-bottom: var(--spacing-2);
+.fw-preview .pw-panel-render {
+	padding: 0;
 }
 .fw-preview-card {
 	background: var(--color-white);
@@ -100,7 +128,7 @@ export default {
 }
 .fw-block-fields {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: repeat(12, minmax(0, 1fr));
 	gap: var(--spacing-2) var(--spacing-3);
 }
 .fw-block-field {
@@ -108,8 +136,13 @@ export default {
 	flex-direction: column;
 	gap: 3px;
 	min-width: 0;
+	grid-column: span 6;
 }
-.fw-block-field.is-full {
+.fw-block-field[data-width="1/4"] { grid-column: span 3; }
+.fw-block-field[data-width="1/3"] { grid-column: span 4; }
+.fw-block-field[data-width="2/3"] { grid-column: span 8; }
+.fw-block-field[data-width="3/4"] { grid-column: span 9; }
+.fw-block-field[data-width="full"] {
 	grid-column: 1 / -1;
 }
 .fw-block-field.is-when {

@@ -93,23 +93,23 @@ class fwFields
 				'default'   => $wide ? 'full' : 'half',
 				'translate' => false,
 				'width'     => '1/2',
-				'options'   => [
-					['value' => 'half', 'text' => ['*' => 'formwizard.field.width.half']],
-					['value' => 'full', 'text' => ['*' => 'formwizard.field.width.full']],
-				],
+				// (as Kirby's widths: a fraction each)
+				'options'   => array_map(fn ($w) => ['value' => $w, 'text' => ['half' => '1/2', 'full' => '1/1'][$w] ?? $w], fwForms::WIDTHS),
 			];
 		}
 
-		$tabs = ['field' => ['label' => 'formwizard.tab.field', 'fields' => $fields]];
+		// all on one page: the options and the condition below headings
 		if ($hasOptions) {
-			$tabs['options'] = ['label' => 'formwizard.tab.options', 'fields' => self::optionsField()];
+			$fields['headlineOptions'] = ['label' => 'formwizard.tab.options', 'type' => 'headline'];
+			$fields += self::optionsField();
 		}
-		$tabs['condition'] = ['label' => 'formwizard.tab.condition', 'fields' => self::condition()];
+		$fields['headlineCondition'] = ['label' => 'formwizard.tab.condition', 'type' => 'headline'];
+		$fields += self::condition();
 
 		return [
 			'name'    => 'formwizard.type.' . $type,
 			'icon'    => $icon,
-			'tabs'    => $tabs,
+			'fields'  => $fields,
 		];
 	}
 
@@ -180,6 +180,13 @@ class fwFields
 				'translate' => false,
 				'width'     => '1/4',
 			],
+			// (only when the form mails: hidden in the editor otherwise)
+			'attach' => [
+				'label'     => 'formwizard.field.attach',
+				'type'      => 'toggle',
+				'translate' => false,
+				'help'      => 'formwizard.field.attach.help',
+			],
 		];
 	}
 
@@ -227,21 +234,32 @@ class fwFields
 
 	private static function consent(): array
 	{
-		return ['text' => [
-			'label'   => 'formwizard.field.text',
-			'type'    => 'writer',
-			'inline'  => true,
-			'marks'   => ['bold', 'italic', 'link'],
-			'help'    => 'formwizard.field.consent.help',
-		]];
+		return [
+			'text' => [
+				'label'   => 'formwizard.field.text',
+				'type'    => 'writer',
+				'inline'  => true,
+				'marks'   => ['bold', 'italic', 'link'],
+				'help'    => 'formwizard.field.consent.help',
+			],
+			// the page the standard text links to
+			'privacy' => [
+				'label'     => 'formwizard.privacy',
+				'type'      => 'pages',
+				'multiple'  => false,
+				'translate' => false,
+				'help'      => 'formwizard.privacy.help',
+			],
+		];
 	}
 
 	private static function optionsField(): array
 	{
 		return ['options' => [
-			'label'     => 'formwizard.field.options',
+			'label'     => '',
 			'type'      => 'structure',
 			'sortable'  => true,
+			// (at least one; its label hidden – the heading names it – see index.css)
 			'required'  => true,
 			'min'       => 1,
 			'columns'   => ['text' => ['width' => '2/3'], 'value' => ['width' => '1/3']],
@@ -256,6 +274,8 @@ class fwFields
 					'label'     => 'formwizard.field.option.value',
 					'type'      => 'slug',
 					'translate' => false,
+					// (from the text while typing: the value conditions keep)
+					'sync'      => 'text',
 					'help'      => 'formwizard.field.option.value.help',
 				],
 			],
@@ -266,7 +286,7 @@ class fwFields
 	{
 		return ['when' => [
 			'label'       => 'formwizard.field.when',
-			'type'        => 'select',
+			'type'        => 'fwwhen',
 			'placeholder' => 'formwizard.field.when.always',
 			'translate'   => false,
 			'help'        => 'formwizard.field.when.help',

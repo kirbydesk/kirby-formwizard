@@ -79,6 +79,22 @@ class fwSettings
 		return self::forPanel();
 	}
 
+	/* -------------- Steps done once (after an update) --------------*/
+
+	public static function done(string $step): bool
+	{
+		return !empty(self::stored()['done'][$step]);
+	}
+
+	public static function markDone(string $step): void
+	{
+		$stored = self::stored();
+		$stored['done'][$step] = true;
+		$file = self::file();
+		if (!is_dir(dirname($file))) mkdir(dirname($file), 0755, true);
+		file_put_contents($file, json_encode($stored, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+	}
+
 	/* -------------- The secret, encrypted --------------*/
 
 	private static function key(bool $create = false): ?string

@@ -37,7 +37,6 @@ class fwSubmit
 
 		// spam gets "sent" without anything happening
 		if (fwSpam::isSpam($data)) return ['status' => 'sent'];
-		if ($form->content()->get('closed')->toBool()) return ['status' => 'closed'];
 
 		$errors = [];
 		$shown  = [];

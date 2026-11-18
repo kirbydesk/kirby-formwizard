@@ -11,14 +11,19 @@
 				<span>{{ fieldset.name }}</span>
 				<span v-if="optionsCount !== null"> · {{ $t('formwizard.preview.options', { count: optionsCount }) }}</span>
 				<span v-if="fwType === 'fwhidden'"> · {{ $t('formwizard.preview.hidden') }}</span>
-				<span v-if="condition" class="fw-field-condition"> · {{ $t('formwizard.preview.condition') }} {{ condition }}</span>
+				<span v-if="condition && condition.invalid" class="fw-field-condition is-invalid"> · {{ $t('formwizard.preview.condition.invalid') }}</span>
+				<span v-else-if="condition" class="fw-field-condition"> · {{ $t('formwizard.preview.condition') }} {{ condition.field }} = {{ condition.text }}</span>
 			</div>
 		</div>
-		<span v-if="fwType !== 'fwhidden'" class="fw-field-width" :title="$t('formwizard.field.width')">{{ width === 'full' ? '1/1' : '1/2' }}</span>
+		<!-- (a condition: at a glance, beside the width) -->
+		<k-icon v-if="condition" :type="condition.invalid ? 'alert' : 'git-branch'" class="fw-field-when" :class="{ 'is-invalid': condition.invalid }" />
+		<span v-if="fwType !== 'fwhidden'" class="fw-field-width" :title="$t('formwizard.field.width')">{{ { half: '1/2', full: '1/1' }[width] || width }}</span>
 	</div>
 </template>
 
 <script>
+import { fwEditor, readCondition, slugger } from '../editor.js';
+
 export default {
 	computed: {
 		// (the block's type: "type" of the block, else its fieldset's)
@@ -37,10 +42,13 @@ export default {
 		optionsCount() {
 			return Array.isArray(this.content.options) ? this.content.options.length : null;
 		},
-		// "<block id>:<value>" – the value is enough to recognise it
+		// "<block id>:<value>": the choice field above and its option (the
+		// fields of the form being edited), else only the value
 		condition() {
 			const when = this.content.when || '';
-			return when.includes(':') ? '= ' + when.slice(when.indexOf(':') + 1) : '';
+			if (!when.includes(':')) return null;
+			if (!fwEditor.blocks.length) return { field: '', text: when.slice(when.indexOf(':') + 1) };
+			return readCondition(when, this.id, fwEditor.blocks, slugger(this));
 		}
 	}
 };
@@ -81,6 +89,14 @@ export default {
 }
 .fw-field-condition {
 	color: var(--color-blue-700);
+}
+.fw-field-condition.is-invalid,
+.fw-field-when.is-invalid {
+	color: var(--color-red-700);
+}
+.fw-field-when {
+	color: var(--color-blue-700);
+	flex-shrink: 0;
 }
 .fw-field-width {
 	font-size: var(--text-xs);

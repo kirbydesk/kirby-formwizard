@@ -11,8 +11,6 @@
 			<div v-else-if="form" class="fw-block-head">
 				<k-icon type="formwizard" />
 				<strong>{{ form.title }}</strong>
-				<span v-if="form.status === 'draft'" class="fw-block-pill">{{ $t('formwizard.status.draft') }}</span>
-				<span v-if="form.closed" class="fw-block-pill">{{ $t('formwizard.closed.on') }}</span>
 				<k-link :to="form.link" class="fw-block-edit" @click.native.stop>{{ $t('formwizard.block.edit') }} →</k-link>
 			</div>
 		</div>
@@ -39,7 +37,7 @@ export default {
 	computed: {
 		previewContent() {
 			if (!this.form) return { ...this.content, _fwfields: [] };
-			return { ...this.content, _fwfields: this.form.fields, _fwbutton: this.form.button };
+			return { ...this.content, _fwfields: this.form.fields, _fwbutton: this.form.button, _fwbuttonlayout: this.form.buttonLayout };
 		},
 		// the chosen form: its uuid (or id)
 		formRef() {

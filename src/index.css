@@ -1,8 +1,14 @@
 /* The Panel menu: the count of new submissions at the end of the row,
    not on its corner (only with the menu open) */
-.k-panel[data-menu="true"] .k-panel-menu-button[href$="formwizard/submissions"] .k-button-badge {
+.k-panel[data-menu="true"] .k-panel-menu-button[href*="formwizard/submissions"] .k-button-badge {
 	position: static;
 	inset: auto;
 	transform: none;
 	margin-inline-start: auto;
+}
+
+/* a field's options (the editor): its label hidden – the heading above
+   names them; the list stays required (at least one) */
+.k-drawer .k-structure-field.k-field-name-options > .k-field-header .k-field-label {
+	visibility: hidden;
 }

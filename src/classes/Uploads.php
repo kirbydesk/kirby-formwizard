@@ -75,15 +75,6 @@ class fwUploads
 
 	/* -------------- Keeping and attaching --------------*/
 
-	/** What happens to the files of a form: store (with the submission), attach (to the team's mail), both */
-	public static function mode(\Kirby\Cms\Page $form, bool $stored): string
-	{
-		$mode = (string) $form->content()->get('uploads')->value();
-		$mode = in_array($mode, ['store', 'attach', 'both'], true) ? $mode : 'store';
-		// (nothing stored: the files only go with the mail – else they'd be lost)
-		return $stored ? $mode : 'attach';
-	}
-
 	/** A safe file name: letters, digits, dashes – the extension kept (lowercase) */
 	public static function safeName(string $name): string
 	{
@@ -100,7 +91,7 @@ class fwUploads
 	 */
 	public static function keep(\Kirby\Cms\Page $form, array $submission, array $uploads): array
 	{
-		$stored = ($submission['stored'] ?? true) && in_array(self::mode($form, $submission['stored'] ?? true), ['store', 'both'], true);
+		$stored = $submission['stored'] ?? true;
 		$dir    = $stored
 			? fwSubmissions::root() . '/' . $submission['formId'] . '/' . $submission['id']
 			: (kirby()->root('cache') ?? sys_get_temp_dir()) . '/formwizard-' . $submission['id'];

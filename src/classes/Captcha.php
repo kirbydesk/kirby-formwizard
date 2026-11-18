@@ -37,13 +37,24 @@ class fwCaptcha
 		],
 	];
 
-	/** The provider for this form – null without one (none set up, keys missing, the form says no) */
-	public static function provider(Page $form): ?string
+	/** The providers' names (the forms' switch shows the one set up) */
+	public const NAMES = ['friendly' => 'Friendly Captcha', 'turnstile' => 'Cloudflare Turnstile', 'hcaptcha' => 'hCaptcha'];
+
+	/** The provider set up under Forms › Settings (with its keys) – null without */
+	public static function setUp(): ?string
 	{
 		$settings = fwSettings::get();
 		$provider = $settings['captcha'];
 		if ($provider === 'none' || !isset(self::PROVIDERS[$provider])) return null;
 		if ($settings['captchaSiteKey'] === '' || fwSettings::secret() === null) return null;
+		return $provider;
+	}
+
+	/** The provider for this form – null without one (none set up, keys missing, the form says no) */
+	public static function provider(Page $form): ?string
+	{
+		$provider = self::setUp();
+		if ($provider === null) return null;
 		$c = $form->content()->get('captcha');
 		return $c->isEmpty() || $c->toBool() ? $provider : null;
 	}

@@ -57,20 +57,21 @@ return [
 			},
 		],
 		[
+			'pattern' => 'formwizard/pw/forms/(:any)/title',
+			'method'  => 'POST',
+			'action'  => function (string $slug) {
+				fwEditor::guard();
+				$body = kirby()->request()->body();
+				return ['title' => fwEditor::rename($slug, (string) $body->get('title'), $body->get('language'))];
+			},
+		],
+		[
 			'pattern' => 'formwizard/pw/forms/(:any)',
 			'method'  => 'DELETE',
 			'action'  => function (string $slug) {
 				fwEditor::guard();
 				fwEditor::delete($slug);
 				return ['deleted' => $slug];
-			},
-		],
-		[
-			'pattern' => 'formwizard/pw/forms/(:any)/status',
-			'method'  => 'POST',
-			'action'  => function (string $slug) {
-				fwEditor::guard();
-				return fwEditor::setStatus($slug, (string) kirby()->request()->get('status'));
 			},
 		],
 		[
@@ -101,20 +102,35 @@ return [
 				$fields = [];
 				foreach (fwRender::fields($form) as $field) {
 					if ($field['type'] === 'fwhidden') continue;
+					$c = $field['block']->content();
+					$select = $field['type'] === 'fwselect';
 					$fields[] = [
 						'type'     => $field['type'],
 						'label'    => $field['label'],
 						'required' => $field['required'],
 						'width'    => $field['width'],
-						'options'  => array_values($field['options'] ?? []),
+						// (boxes for radio and checkboxes; a dropdown shows its first entry when clicked)
+						'options'  => $select ? [] : array_values($field['options'] ?? []),
+						'select'   => $select,
+						'choice'   => $select ? (string) (array_values($field['options'] ?? [])[0] ?? '') : '',
+						'placeholder' => (string) $c->get('placeholder')->value() ?: ($select ? t('formwizard.field.placeholder.select') : ''),
+						'help'     => (string) $c->get('help')->value(),
+						'limits'   => $field['type'] === 'fwfile' ? fwUploads::limits($c) : '',
+						// (the text without its formatting marks, as in the form's preview)
+						'text'     => match ($field['type']) {
+							'fwinfo'    => preg_replace('/[*_#]+/', '', (string) $c->get('text')->value()),
+							// (a consent: its text as on the website, without the link)
+							'fwconsent' => trim(strip_tags((string) $c->get('text')->value())) ?: ($c->get('privacy')->toPage() ? tt('formwizard.consent.link', null, ['link' => t('formwizard.consent.privacy')]) : t('formwizard.consent.default')),
+							default     => '',
+						},
 						'when'     => $field['when'] !== null,
 					];
 				}
 				return ['form' => [
 					'title'  => $form->title()->value(),
 					'status' => $form->status(),
-					'closed' => $form->content()->get('closed')->toBool(),
 					'button' => $form->content()->get('buttonText')->or(t('formwizard.button.default'))->value(),
+					'buttonLayout' => fwRender::buttonLayout($form),
 					'link'   => fwForms::editUrl($form),
 					'fields' => $fields,
 				]];
