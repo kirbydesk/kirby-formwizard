@@ -142,6 +142,12 @@ class fwTemplates
 			$content = ['label' => $label, 'width' => $width];
 			if ($type !== 'fwinfo') $content['key'] = $key;
 			if ($type !== 'fwinfo' && $type !== 'fwhidden') $content['required'] = $required;
+			// a consent of its own (the talent pool): a short name for mails and
+			// submissions, its sentence the checkbox's text – else the standard
+			// consent shows a second time
+			if ($type === 'fwconsent' && $key !== 'privacy') {
+				$content['text'] = t('formwizard.tpl.' . $template . '.' . $key . '.text', $label);
+			}
 			foreach ($extra as $name => $value) {
 				$content[$name] = $name === 'options'
 					? array_map(fn ($o) => ['text' => t('formwizard.tpl.' . $template . '.' . $key . '.' . $o, t('formwizard.tpl.field.' . $key . '.' . $o, $o)), 'value' => $o], $value)

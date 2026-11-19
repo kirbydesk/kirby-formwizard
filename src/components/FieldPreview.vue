@@ -5,7 +5,7 @@
 		<k-icon :type="fieldset.icon" class="fw-field-icon" />
 		<div class="fw-field-text">
 			<div class="fw-field-label">
-				{{ label }}<span v-if="required" class="fw-field-required" :title="$t('formwizard.preview.required')"> *</span>
+				{{ label }}<span v-if="required" class="fw-field-required" :title="$t('formwizard.preview.required')">&nbsp;*</span>
 			</div>
 			<div class="fw-field-meta">
 				<span>{{ fieldset.name }}</span>

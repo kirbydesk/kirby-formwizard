@@ -49,6 +49,8 @@ class fwFields
 			'default'  => t('formwizard.type.' . $type),
 			'width'    => $type === 'fwinfo' ? '1/1' : '1/2',
 		];
+		// (a consent: on the website its text, not its label)
+		if ($type === 'fwconsent') $fields['label']['help'] = 'formwizard.field.label.consent.help';
 		if ($type !== 'fwinfo') {
 			$fields['key'] = [
 				'label'     => 'formwizard.field.key',

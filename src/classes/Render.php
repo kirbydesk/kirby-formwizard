@@ -129,7 +129,8 @@ class fwRender
 		$name  = 'fw[' . $key . ']';
 		$id    = $prefix . '-' . $key;
 		$help  = trim((string) $c->get('help')->value());
-		$star  = $f['required'] ? ' <span aria-hidden="true">*</span>' : '';
+		// (a non-breaking space: the star never alone on a line of its own)
+		$star  = $f['required'] ? '&nbsp;<span aria-hidden="true">*</span>' : '';
 		$label = esc($f['label']);
 
 		// the attributes every input shares: name, id, required, error, help

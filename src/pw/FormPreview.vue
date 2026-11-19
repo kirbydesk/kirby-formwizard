@@ -14,10 +14,10 @@
 					</template>
 					<template v-else-if="field.type === 'fwconsent'">
 						<span class="fw-block-check"></span>
-						<span>{{ field.label }}<span v-if="field.required" class="fw-block-required"> *</span></span>
+						<span>{{ field.label }}<span v-if="field.required" class="fw-block-required">&nbsp;*</span></span>
 					</template>
 					<template v-else>
-						<span class="fw-block-label">{{ field.label }}<span v-if="field.required" class="fw-block-required"> *</span></span>
+						<span class="fw-block-label">{{ field.label }}<span v-if="field.required" class="fw-block-required">&nbsp;*</span></span>
 						<span v-if="['fwradio', 'fwcheckboxes'].includes(field.type)" class="fw-block-options">
 							<span v-for="(option, j) in field.options" :key="j"><span class="fw-block-check" :class="{ 'is-round': field.type === 'fwradio' }"></span>{{ option }}</span>
 						</span>
