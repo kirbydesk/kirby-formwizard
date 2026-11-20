@@ -5,7 +5,7 @@
 		<k-header>
 			{{ formName || $t('formwizard.submissions') }}
 			<template #buttons>
-				<k-button icon="download" variant="filled" size="sm" :link="csv" :text="$t('formwizard.submissions.csv')" :disabled="!pagination.total" />
+				<k-button icon="download" variant="filled" size="sm" :link="csvLink" :text="$t('formwizard.submissions.csv')" :disabled="!pagination.total" />
 			</template>
 		</k-header>
 
@@ -72,6 +72,10 @@ export default {
 		};
 	},
 	computed: {
+		// a Panel request opened as a link: it needs the Panel's CSRF token (Kirby answers 400 otherwise)
+		csvLink() {
+			return this.csv + (this.csv.includes('?') ? '&' : '?') + 'csrf=' + encodeURIComponent(this.$panel.system.csrf);
+		},
 		filtered() {
 			return !!(this.filter.form || this.filter.status || this.filter.q);
 		}

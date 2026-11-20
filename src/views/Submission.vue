@@ -49,7 +49,7 @@
 				<ul class="fw-sub-files">
 					<li v-for="file in submission.files" :key="file.name">
 						<k-icon type="attachment" />
-						<a v-if="file.url" :href="file.url">{{ file.name }}</a>
+						<a v-if="file.url" :href="withCsrf(file.url)">{{ file.name }}</a>
 						<span v-else>{{ file.name }}</span>
 						<small v-if="file.size">{{ file.size }}</small>
 					</li>
@@ -80,6 +80,10 @@ export default {
 		}
 	},
 	methods: {
+		// a Panel request opened as a link: it needs the Panel's CSRF token (Kirby answers 400 otherwise)
+		withCsrf(url) {
+			return url + (url.includes('?') ? '&' : '?') + 'csrf=' + encodeURIComponent(this.$panel.system.csrf);
+		},
 		async toggle() {
 			const status = this.submission.status === 'new' ? 'done' : 'new';
 			await this.$api.post('formwizard/submissions/' + this.submission.id + '/status', { status });
