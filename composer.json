@@ -1,6 +1,6 @@
 {
 	"name": "kirbydesk/kirby-formwizard",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Form builder for Kirby CMS",
 	"type": "kirby-plugin",
 	"keywords": [
