@@ -60,8 +60,9 @@ class fwTemplates
 				['profile', 'fwtext', false, 'half'],
 				['source', 'fwselect', false, 'half', ['options' => ['website', 'jobportal', 'referral', 'social', 'other']]],
 				['documents', 'fwinfo', false, 'full'],
-				['cv', 'fwfile', true, 'full', ['accept' => 'documents', 'maxsize' => 10]],
-				['more', 'fwfile', false, 'full', ['accept' => 'documents, images', 'maxsize' => 10, 'multiple' => true]],
+				// (the documents with the team's mail: an application is read from there)
+				['cv', 'fwfile', true, 'full', ['accept' => 'documents', 'maxsize' => 10, 'attach' => true]],
+				['more', 'fwfile', false, 'full', ['accept' => 'documents, images', 'maxsize' => 10, 'multiple' => true, 'attach' => true]],
 				['message', 'fwtextarea', false, 'full'],
 				['privacy', 'fwconsent', true, 'full'],
 				// (kept for later positions: only with its own consent)
